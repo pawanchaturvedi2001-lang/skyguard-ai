@@ -288,7 +288,7 @@ class WeatherService:
             f"?latitude={lat}&longitude={lon}"
             f"&current=temperature_2m,relative_humidity_2m,apparent_temperature,pressure_msl,surface_pressure,weather_code,wind_speed_10m,wind_direction_10m,cloud_cover,precipitation,rain,is_day"
             f"&hourly=temperature_2m,relative_humidity_2m,pressure_msl"
-            f"&past_hours=12&forecast_hours=1"
+            f"&past_days=1&forecast_days=1"
         )
         req = urllib.request.Request(
             url,
