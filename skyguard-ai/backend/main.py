@@ -41,10 +41,19 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware for frontend communication during development
+import os
+
+# CORS middleware for frontend communication (local development and Vercel production)
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "*")
+if allowed_origins_env == "*":
+    origins = ["*"]
+else:
+    origins = [orig.strip() for orig in allowed_origins_env.split(",") if orig.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
+    allow_origin_regex=r"https://.*\.vercel\.app" if origins != ["*"] else None,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -121,4 +130,6 @@ def get_model_info():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend.main:app", host="127.0.0.1", port=8000, reload=True)
+    port = int(os.getenv("PORT", 8000))
+    host = os.getenv("HOST", "127.0.0.1")
+    uvicorn.run("backend.main:app", host=host, port=port, reload=True)
