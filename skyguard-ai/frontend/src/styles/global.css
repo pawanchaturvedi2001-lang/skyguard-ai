@@ -512,3 +512,134 @@ body {
     transform: scale(1) translateY(0);
   }
 }
+
+/* ==============================================================================
+   Unified Raised Tap & Click Animation System
+   Triggers a prominent, tactile raised elevation when any button, card, chip, 
+   tab, or interactive element is tapped/clicked.
+   ============================================================================== */
+
+/* 1. Global Button & Clickable Tap Feedback */
+.btn, 
+button, 
+[role="button"],
+.raised-tap {
+  position: relative;
+  transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              border-color 0.15s ease,
+              background-color 0.15s ease;
+  will-change: transform, box-shadow;
+}
+
+/* Hover: Lifts up slightly */
+.btn:hover:not(:disabled), 
+button:hover:not(:disabled),
+.raised-tap:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px -2px rgba(2, 132, 199, 0.22);
+}
+
+/* TAP / CLICK (ACTIVE): Visibly raises up with a tactile spring and glowing rim */
+.btn:active:not(:disabled), 
+button:active:not(:disabled),
+.raised-tap:active {
+  transform: translateY(-4px) scale(1.025) !important;
+  box-shadow: 0 12px 24px -2px rgba(2, 132, 199, 0.38), 
+              0 0 0 2px rgba(2, 132, 199, 0.3) !important;
+}
+
+/* Primary Button Distinct Tap Elevation */
+.btn-primary:active:not(:disabled) {
+  transform: translateY(-4px) scale(1.03) !important;
+  box-shadow: 0 14px 28px -2px rgba(2, 132, 199, 0.48), 
+              0 0 0 3px rgba(56, 189, 248, 0.4) !important;
+}
+
+/* 2. Sidebar Navigation Items: Raised Tap Animation */
+.nav-button-raised:active {
+  transform: translateX(6px) translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.25) !important;
+  background: rgba(2, 132, 199, 0.14) !important;
+}
+
+/* 3. Cards Tap Elevation */
+.telemetry-card:active, 
+.raised-card:active {
+  transform: translateY(-4px) scale(1.008) !important;
+  box-shadow: 0 16px 32px -4px rgba(2, 132, 199, 0.22), 
+              0 0 0 1px rgba(2, 132, 199, 0.3) !important;
+}
+
+/* 4. Logo Brand Tap Animation */
+.brand-interactive-raised:active {
+  transform: translateY(-3px) scale(1.03) !important;
+  box-shadow: 0 10px 24px -2px rgba(2, 132, 199, 0.3) !important;
+}
+
+/* 5. City Quick-Access Chips / Pills Tap Animation */
+button[style*="favoriteChip"],
+.favorite-chip {
+  transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.18s ease, 
+              border-color 0.18s ease !important;
+}
+
+button[style*="favoriteChip"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(2, 132, 199, 0.18) !important;
+}
+
+button[style*="favoriteChip"]:active {
+  transform: translateY(-4px) scale(1.06) !important;
+  box-shadow: 0 10px 22px rgba(2, 132, 199, 0.32), 
+              0 0 0 2px rgba(2, 132, 199, 0.25) !important;
+}
+
+/* 6. Demonstration Preset Buttons Tap Animation */
+button[style*="presetBtn"] {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.2s ease, 
+              border-color 0.2s ease !important;
+}
+
+button[style*="presetBtn"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px -3px rgba(2, 132, 199, 0.16) !important;
+}
+
+button[style*="presetBtn"]:active {
+  transform: translateY(-5px) scale(1.035) !important;
+  box-shadow: 0 16px 30px -2px rgba(2, 132, 199, 0.32), 
+              0 0 0 2px rgba(2, 132, 199, 0.35) !important;
+}
+
+/* 7. Subtabs & Toolbar Filter Buttons Tap Animation */
+button[style*="tabBtn"],
+button[style*="controlBtn"],
+button[style*="themeToggleBtn"],
+button[style*="refreshButton"],
+button[style*="iconBtn"] {
+  transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.18s ease, 
+              border-color 0.15s ease !important;
+}
+
+button[style*="tabBtn"]:hover,
+button[style*="controlBtn"]:hover,
+button[style*="themeToggleBtn"]:hover,
+button[style*="refreshButton"]:hover,
+button[style*="iconBtn"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(2, 132, 199, 0.18) !important;
+}
+
+button[style*="tabBtn"]:active,
+button[style*="controlBtn"]:active,
+button[style*="themeToggleBtn"]:active,
+button[style*="refreshButton"]:active,
+button[style*="iconBtn"]:active {
+  transform: translateY(-3px) scale(1.05) !important;
+  box-shadow: 0 10px 22px rgba(2, 132, 199, 0.3), 
+              0 0 0 2px rgba(2, 132, 199, 0.25) !important;
+}
