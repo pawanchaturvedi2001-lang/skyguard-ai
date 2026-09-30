@@ -5,11 +5,9 @@ from ml.feature_engineering import create_features
 from ml.anomaly_detector import AnomalyDetector
 
 
-DATA_PATH = "data/raw/aws_historical.csv"
-
-OUTPUT_PATH = Path(
-    "data/generated/anomaly_results.csv"
-)
+BASE_DIR = Path(__file__).resolve().parent
+DATA_PATH = BASE_DIR / "data" / "raw" / "aws_historical.csv"
+OUTPUT_PATH = BASE_DIR / "data" / "generated" / "anomaly_results.csv"
 
 
 def main():

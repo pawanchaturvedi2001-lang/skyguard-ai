@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 
 
-OUTPUT_PATH = Path("data/raw/aws_historical.csv")
+BASE_DIR = Path(__file__).resolve().parent
+OUTPUT_PATH = BASE_DIR / "data" / "raw" / "aws_historical.csv"
 
 NUM_STATIONS = 10
 DAYS = 30

@@ -1,0 +1,70 @@
+# ==============================================================================
+# SkyGuard AI - Git Ignore Configuration
+# ==============================================================================
+
+# Python Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+*.venv/
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node & Frontend Dependencies and Builds
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+**/build/
+.npm/
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.pfx
+
+# IDEs & Editor Metadata
+.vscode/
+**/.vscode/
+.idea/
+**/.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# Temporary Test Scripts, Scratch Files & Artifacts
+scratch/
+**/scratch/
+test_tmp/
+tmp/
+temp/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

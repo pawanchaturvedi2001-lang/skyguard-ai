@@ -1,0 +1,54 @@
+# ==============================================================================
+# SkyGuard AI - Project-Level Git Ignore Configuration
+# ==============================================================================
+
+# Python Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Node & Frontend Dependencies and Builds
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+build/
+.npm/
+
+# Environment Variables & Secrets
+.env
+.env.*
+frontend/.env
+frontend/.env.*
+!.env.example
+!frontend/.env.example
+*.pem
+*.key
+*.cert
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary Test Scripts & Scratch
+scratch/
+test_tmp/
+tmp/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Operating System Files
+.DS_Store
+Thumbs.db
