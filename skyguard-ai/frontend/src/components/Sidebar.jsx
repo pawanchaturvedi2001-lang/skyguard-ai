@@ -42,7 +42,7 @@ export default function Sidebar({ activeTab, setActiveTab, systemHealth, isBacke
       {/* Mission Badge */}
       <div style={styles.missionTag}>
         <span style={styles.missionDot}></span>
-        <span>AWS MONITORING / SIH</span>
+        <span>AWS MONITORING</span>
       </div>
 
       {/* Navigation */}

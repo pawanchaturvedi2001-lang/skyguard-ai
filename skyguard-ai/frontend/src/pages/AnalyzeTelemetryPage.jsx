@@ -135,7 +135,7 @@ export default function AnalyzeTelemetryPage() {
         <div style={styles.presetHeader}>
           <Sparkles size={16} color="var(--primary-color)" />
           <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-main)' }}>
-            DEMONSTRATION PRESETS (1-Click SIH Live Test)
+            DEMONSTRATION PRESETS (1-Click Live Test)
           </span>
         </div>
         <div style={styles.presetGrid}>
