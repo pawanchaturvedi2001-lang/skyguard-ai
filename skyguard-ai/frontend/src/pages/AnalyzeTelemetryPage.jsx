@@ -6,9 +6,10 @@ import {
   AlertTriangle, 
   Zap, 
   Layers, 
-  RefreshCw, 
   FileText, 
-  Sparkles 
+  Sparkles,
+  MapPin,
+  Shield
 } from 'lucide-react';
 
 export default function AnalyzeTelemetryPage() {
@@ -17,7 +18,7 @@ export default function AnalyzeTelemetryPage() {
     temperature: '28.2',
     pressure: '1008.1',
     humidity: '64.5',
-    station_id: 'SAT-001',
+    station_id: 'AWS-001',
     timestamp: '',
   });
 
@@ -34,26 +35,26 @@ export default function AnalyzeTelemetryPage() {
   const presets = [
     {
       name: 'Nominal Baseline',
-      desc: 'Normal orbit temperature, standard pressure, moderate humidity',
-      data: { temperature: '28.2', pressure: '1008.1', humidity: '64.5', station_id: 'SAT-001' },
+      desc: 'Normal ambient temperature, standard pressure, moderate humidity',
+      data: { temperature: '28.2', pressure: '1008.1', humidity: '64.5', station_id: 'AWS-001' },
       tag: 'NORMAL',
     },
     {
       name: 'Thermal Spike Anomaly',
-      desc: 'Sudden +26°C jump indicating battery thermal runaway or direct solar flare',
-      data: { temperature: '54.5', pressure: '1008.0', humidity: '65.0', station_id: 'SAT-001' },
+      desc: 'Sudden +26°C jump indicating battery thermal runaway or sensor short circuit',
+      data: { temperature: '54.5', pressure: '1008.0', humidity: '65.0', station_id: 'AWS-001' },
       tag: 'HIGH ANOMALY',
     },
     {
       name: 'Barometric Drop Anomaly',
-      desc: 'Pressure drop to 975 hPa indicating atmospheric depressurization or sensor seal leak',
-      data: { temperature: '28.0', pressure: '975.0', humidity: '60.0', station_id: 'SAT-002' },
+      desc: 'Pressure drop to 975 hPa indicating barometric sensor calibration failure or severe storm front',
+      data: { temperature: '28.0', pressure: '975.0', humidity: '60.0', station_id: 'AWS-002' },
       tag: 'HIGH ANOMALY',
     },
     {
       name: 'Humidity Saturation Spike',
-      desc: 'Moisture surge to 98% indicating condensation near electronics bay',
-      data: { temperature: '28.0', pressure: '1008.0', humidity: '98.0', station_id: 'SAT-003' },
+      desc: 'Moisture surge to 98% indicating condensation near electronics bay or water ingress',
+      data: { temperature: '28.0', pressure: '1008.0', humidity: '98.0', station_id: 'AWS-003' },
       tag: 'MEDIUM ANOMALY',
     },
   ];
@@ -79,7 +80,7 @@ export default function AnalyzeTelemetryPage() {
         temperature: parseFloat(formData.temperature),
         pressure: parseFloat(formData.pressure),
         humidity: parseFloat(formData.humidity),
-        station_id: formData.station_id || 'SAT-001',
+        station_id: formData.station_id || 'AWS-001',
       };
       if (formData.timestamp) {
         payload.timestamp = formData.timestamp;
@@ -100,11 +101,11 @@ export default function AnalyzeTelemetryPage() {
     setBatchResult(null);
 
     const sampleBatch = [
-      { temperature: 28.0, humidity: 65.0, pressure: 1008.0, station_id: 'SAT-BATCH-1' },
-      { temperature: 28.4, humidity: 64.0, pressure: 1008.2, station_id: 'SAT-BATCH-1' },
-      { temperature: 56.5, humidity: 95.0, pressure: 1042.0, station_id: 'SAT-BATCH-2' }, // Anomaly
-      { temperature: 27.8, humidity: 63.0, pressure: 1007.9, station_id: 'SAT-BATCH-3' },
-      { temperature: 28.1, humidity: 65.2, pressure: 974.0, station_id: 'SAT-BATCH-4' },  // Anomaly
+      { temperature: 28.0, humidity: 65.0, pressure: 1008.0, station_id: 'AWS-001' },
+      { temperature: 28.4, humidity: 64.0, pressure: 1008.2, station_id: 'AWS-001' },
+      { temperature: 56.5, humidity: 95.0, pressure: 1042.0, station_id: 'AWS-002' }, // Anomaly
+      { temperature: 27.8, humidity: 63.0, pressure: 1007.9, station_id: 'AWS-003' },
+      { temperature: 28.1, humidity: 65.2, pressure: 974.0, station_id: 'AWS-004' },  // Anomaly
     ];
 
     try {
@@ -121,10 +122,10 @@ export default function AnalyzeTelemetryPage() {
     <div>
       {/* Header */}
       <div style={{ marginBottom: '22px' }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#0f172a' }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-main)' }}>
           Real-Time Anomaly Inference Engine
         </h2>
-        <p style={{ fontSize: '0.80rem', color: '#64748b', marginTop: '2px' }}>
+        <p style={{ fontSize: '0.80rem', color: 'var(--text-muted)', marginTop: '2px' }}>
           Evaluate live sensor readings through the trained 15-feature Isolation Forest model.
         </p>
       </div>
@@ -132,8 +133,8 @@ export default function AnalyzeTelemetryPage() {
       {/* Preset Action Bar for SIH Presentation */}
       <div style={styles.presetsCard}>
         <div style={styles.presetHeader}>
-          <Sparkles size={16} color="#0284c7" />
-          <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#0f172a' }}>
+          <Sparkles size={16} color="var(--primary-color)" />
+          <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-main)' }}>
             DEMONSTRATION PRESETS (1-Click SIH Live Test)
           </span>
         </div>
@@ -162,23 +163,23 @@ export default function AnalyzeTelemetryPage() {
         <div className="telemetry-card">
           <div className="card-header">
             <div className="card-title">
-              <Zap size={18} color="#0284c7" />
+              <Zap size={18} color="var(--primary-color)" />
               <span>Input Telemetry Packet</span>
             </div>
-            <span style={{ fontSize: '0.72rem', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
               POST /api/predict
             </span>
           </div>
 
           <form onSubmit={handleSinglePredict}>
             <div className="form-group">
-              <label className="form-label">Satellite Node / Station ID</label>
+              <label className="form-label">Weather Station ID</label>
               <input
                 type="text"
                 className="form-input"
                 value={formData.station_id}
                 onChange={(e) => setFormData({ ...formData, station_id: e.target.value })}
-                placeholder="e.g. SAT-001 or AWS-001"
+                placeholder="e.g. AWS-001 (Indore) to AWS-010 (Kolkata)"
                 required
               />
             </div>
@@ -249,7 +250,7 @@ export default function AnalyzeTelemetryPage() {
               style={{ width: '100%', marginTop: '10px', padding: '12px' }}
             >
               <Play size={15} style={{ animation: loading ? 'spin 1s linear infinite' : 'none' }} />
-              <span>{loading ? 'RUNNING ISOLATION FOREST...' : 'ANALYZE TELEMETRY'}</span>
+              <span>{loading ? 'RUNNING ISOLATION FOREST...' : 'ANALYZE AWS TELEMETRY'}</span>
             </button>
           </form>
         </div>
@@ -263,7 +264,7 @@ export default function AnalyzeTelemetryPage() {
                   {result.is_anomaly ? (
                     <AlertTriangle size={20} color="#dc2626" />
                   ) : (
-                    <CheckCircle size={20} color="#059669" />
+                    <CheckCircle size={20} color="var(--status-normal-text)" />
                   )}
                   <span>Inference Decision</span>
                 </div>
@@ -275,31 +276,53 @@ export default function AnalyzeTelemetryPage() {
               {/* Status Banner */}
               <div style={{
                 ...styles.resultBanner,
-                background: result.is_anomaly ? '#fef2f2' : '#ecfdf5',
-                borderColor: result.is_anomaly ? '#fecaca' : '#a7f3d0',
+                background: result.is_anomaly ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                borderColor: result.is_anomaly ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)',
               }}>
                 <div>
                   <div style={{
                     fontSize: '1.25rem',
                     fontWeight: 700,
-                    color: result.is_anomaly ? '#dc2626' : '#059669',
+                    color: result.is_anomaly ? 'var(--status-critical-text)' : 'var(--status-normal-text)',
                     fontFamily: 'var(--font-mono)'
                   }}>
                     {result.is_anomaly ? 'ANOMALY DETECTED' : 'TELEMETRY NOMINAL'}
                   </div>
-                  <div style={{ fontSize: '0.78rem', color: '#475569', marginTop: '2px' }}>
-                    Severity: <strong>{result.severity}</strong> • Node: {result.station_id}
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    Severity: <strong>{result.severity}</strong> • Station: {result.station_id}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div className="mono-value" style={{ fontSize: '1.4rem', fontWeight: 700, color: '#0f172a' }}>
+                  <div className="mono-value" style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-main)' }}>
                     {(result.confidence * 100).toFixed(1)}%
                   </div>
-                  <div style={{ fontSize: '0.70rem', color: '#64748b' }}>
+                  <div style={{ fontSize: '0.70rem', color: 'var(--text-muted)' }}>
                     Confidence Level
                   </div>
                 </div>
               </div>
+
+              {/* Station Geographic Metadata if present */}
+              {result.city && (
+                <div style={styles.stationInfoBox}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <MapPin size={14} color="var(--primary-color)" />
+                    <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-main)' }}>
+                      {result.station_name || result.station_id}: {result.city}, {result.state}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span className="badge badge-info" style={{ fontSize: '0.64rem' }}>
+                      {result.station_type || 'Simulated Station Metadata'}
+                    </span>
+                    {result.latitude != null && (
+                      <span className="mono-value" style={{ fontSize: '0.70rem', color: 'var(--text-muted)' }}>
+                        {result.latitude}°N, {result.longitude}°E
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Score & Raw Telemetry Metrics */}
               <div className="grid-cols-2" style={{ gap: '12px', margin: '16px 0' }}>
@@ -308,21 +331,21 @@ export default function AnalyzeTelemetryPage() {
                   <span className="mono-value" style={{
                     fontSize: '1.15rem',
                     fontWeight: 700,
-                    color: result.anomaly_score < 0 ? '#dc2626' : '#059669'
+                    color: result.anomaly_score < 0 ? '#dc2626' : 'var(--status-normal-text)'
                   }}>
                     {result.anomaly_score.toFixed(6)}
                   </span>
-                  <span style={{ fontSize: '0.68rem', color: '#94a3b8' }}>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
                     Threshold &lt; 0.0 indicates isolation outlier
                   </span>
                 </div>
 
                 <div style={styles.metricBox}>
                   <span style={styles.metricLabel}>Input Physical Readings</span>
-                  <div className="mono-value" style={{ fontSize: '0.80rem', color: '#0f172a', fontWeight: 600, marginTop: '4px' }}>
+                  <div className="mono-value" style={{ fontSize: '0.80rem', color: 'var(--text-main)', fontWeight: 600, marginTop: '4px' }}>
                     {result.telemetry.temperature}°C • {result.telemetry.pressure} hPa • {result.telemetry.humidity}%
                   </div>
-                  <span style={{ fontSize: '0.68rem', color: '#94a3b8' }}>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
                     Scaled with StandardScaler
                   </span>
                 </div>
@@ -331,7 +354,7 @@ export default function AnalyzeTelemetryPage() {
               {/* 15 Features Breakdown */}
               {result.features && (
                 <div>
-                  <div style={{ fontSize: '0.76rem', fontWeight: 600, color: '#64748b', marginBottom: '8px', textTransform: 'uppercase' }}>
+                  <div style={{ fontSize: '0.76rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>
                     Calculated Feature Space (15 Features)
                   </div>
                   <div style={styles.featuresGrid}>
@@ -349,12 +372,12 @@ export default function AnalyzeTelemetryPage() {
             </div>
           ) : (
             <div className="telemetry-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
-              <FileText size={36} color="#94a3b8" style={{ marginBottom: '12px' }} />
-              <h3 style={{ fontSize: '0.95rem', fontWeight: 600, color: '#0f172a' }}>
+              <FileText size={36} color="var(--text-muted)" style={{ marginBottom: '12px' }} />
+              <h3 style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-main)' }}>
                 Awaiting Telemetry Packet
               </h3>
-              <p style={{ fontSize: '0.78rem', color: '#64748b', maxWidth: '320px', margin: '6px auto 0 auto' }}>
-                Fill in the sensor parameters on the left or select a demonstration preset above to evaluate satellite telemetry.
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', maxWidth: '320px', margin: '6px auto 0 auto' }}>
+                Fill in the AWS sensor parameters on the left or select a demonstration preset above to evaluate sensor telemetry.
               </p>
             </div>
           )}
@@ -365,7 +388,7 @@ export default function AnalyzeTelemetryPage() {
       <div className="telemetry-card" style={{ marginTop: '28px' }}>
         <div className="card-header">
           <div className="card-title">
-            <Layers size={18} color="#0284c7" />
+            <Layers size={18} color="var(--primary-color)" />
             <span>Batch Telemetry Processing (POST /api/predict/batch)</span>
           </div>
           <button
@@ -375,12 +398,12 @@ export default function AnalyzeTelemetryPage() {
             style={{ padding: '6px 12px', fontSize: '0.75rem' }}
           >
             <Play size={13} />
-            <span>{batchLoading ? 'Evaluating Batch...' : 'Run 5-Record Flight Test'}</span>
+            <span>{batchLoading ? 'Evaluating Batch...' : 'Run 5-Record Batch Test'}</span>
           </button>
         </div>
 
-        <p style={{ fontSize: '0.78rem', color: '#64748b', marginBottom: '16px' }}>
-          Evaluate sequential multi-point orbital telemetry records in a single high-throughput API payload.
+        <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
+          Evaluate sequential multi-station AWS telemetry records in a single high-throughput API payload.
         </p>
 
         {batchError && (
@@ -395,19 +418,19 @@ export default function AnalyzeTelemetryPage() {
             <div className="grid-cols-3" style={{ gap: '12px', marginBottom: '16px' }}>
               <div style={styles.metricBox}>
                 <span style={styles.metricLabel}>Total Packets</span>
-                <span className="mono-value" style={{ fontSize: '1.3rem', fontWeight: 700, color: '#0f172a' }}>
+                <span className="mono-value" style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-main)' }}>
                   {batchResult.total_records}
                 </span>
               </div>
               <div style={styles.metricBox}>
                 <span style={styles.metricLabel}>Nominal Packets</span>
-                <span className="mono-value" style={{ fontSize: '1.3rem', fontWeight: 700, color: '#059669' }}>
+                <span className="mono-value" style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--status-normal-text)' }}>
                   {batchResult.normal_count}
                 </span>
               </div>
               <div style={styles.metricBox}>
                 <span style={styles.metricLabel}>Anomalies Detected</span>
-                <span className="mono-value" style={{ fontSize: '1.3rem', fontWeight: 700, color: '#dc2626' }}>
+                <span className="mono-value" style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--status-critical-text)' }}>
                   {batchResult.anomaly_count}
                 </span>
               </div>
@@ -417,7 +440,7 @@ export default function AnalyzeTelemetryPage() {
               <table className="telemetry-table">
                 <thead>
                   <tr>
-                    <th>Node ID</th>
+                    <th>Station ID</th>
                     <th>Temp (°C)</th>
                     <th>Pressure (hPa)</th>
                     <th>Humidity (%)</th>
@@ -433,7 +456,7 @@ export default function AnalyzeTelemetryPage() {
                       <td className="mono-value">{p.telemetry.temperature}°C</td>
                       <td className="mono-value">{p.telemetry.pressure} hPa</td>
                       <td className="mono-value">{p.telemetry.humidity}%</td>
-                      <td className="mono-value" style={{ color: p.is_anomaly ? '#dc2626' : '#059669', fontWeight: '600' }}>
+                      <td className="mono-value" style={{ color: p.is_anomaly ? '#dc2626' : 'var(--status-normal-text)', fontWeight: '600' }}>
                         {p.anomaly_score.toFixed(4)}
                       </td>
                       <td className="mono-value">{(p.confidence * 100).toFixed(1)}%</td>
@@ -456,7 +479,7 @@ export default function AnalyzeTelemetryPage() {
 
 const styles = {
   presetsCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'var(--bg-card)',
     border: '1px solid var(--border-subtle)',
     borderRadius: 'var(--radius-md)',
     boxShadow: 'var(--shadow-card)',
@@ -476,7 +499,7 @@ const styles = {
   },
   presetBtn: {
     textAlign: 'left',
-    background: '#f8fafc',
+    background: 'var(--bg-canvas)',
     border: '1px solid var(--border-subtle)',
     borderRadius: 'var(--radius-sm)',
     padding: '12px',
@@ -492,19 +515,19 @@ const styles = {
   presetName: {
     fontSize: '0.80rem',
     fontWeight: '600',
-    color: '#0f172a',
+    color: 'var(--text-main)',
   },
   presetDesc: {
     fontSize: '0.70rem',
-    color: '#64748b',
+    color: 'var(--text-muted)',
     lineHeight: 1.4,
   },
   errorBox: {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    backgroundColor: '#fef2f2',
-    border: '1px solid #fecaca',
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    border: '1px solid rgba(239, 68, 68, 0.3)',
     borderRadius: 'var(--radius-sm)',
     padding: '10px 14px',
     color: '#b91c1c',
@@ -519,8 +542,20 @@ const styles = {
     borderRadius: 'var(--radius-sm)',
     border: '1px solid',
   },
+  stationInfoBox: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '8px 12px',
+    background: 'var(--bg-canvas)',
+    border: '1px solid var(--border-subtle)',
+    borderRadius: 'var(--radius-sm)',
+    marginTop: '12px',
+    flexWrap: 'wrap',
+    gap: '8px',
+  },
   metricBox: {
-    backgroundColor: '#f8fafc',
+    backgroundColor: 'var(--bg-canvas)',
     border: '1px solid var(--border-subtle)',
     borderRadius: 'var(--radius-sm)',
     padding: '12px',
@@ -530,7 +565,7 @@ const styles = {
   },
   metricLabel: {
     fontSize: '0.70rem',
-    color: '#64748b',
+    color: 'var(--text-muted)',
     textTransform: 'uppercase',
   },
   featuresGrid: {
@@ -539,7 +574,7 @@ const styles = {
     gap: '8px',
     maxHeight: '220px',
     overflowY: 'auto',
-    backgroundColor: '#f8fafc',
+    backgroundColor: 'var(--bg-canvas)',
     padding: '10px',
     borderRadius: 'var(--radius-sm)',
     border: '1px solid var(--border-subtle)',
@@ -551,12 +586,12 @@ const styles = {
   },
   featureKey: {
     fontSize: '0.64rem',
-    color: '#64748b',
+    color: 'var(--text-muted)',
     fontFamily: 'var(--font-mono)',
   },
   featureVal: {
     fontSize: '0.74rem',
-    color: '#0284c7',
+    color: 'var(--primary-color)',
     fontWeight: '600',
   },
 };

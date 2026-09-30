@@ -26,18 +26,18 @@ export default function Sidebar({ activeTab, setActiveTab, systemHealth, isBacke
       {/* Brand Header */}
       <div style={styles.brandContainer}>
         <div style={styles.logoIcon}>
-          <ShieldCheck size={22} color="#0284c7" />
+          <ShieldCheck size={22} color="var(--primary-color)" />
         </div>
         <div>
           <div style={styles.brandTitle}>SKYGUARD AI</div>
-          <div style={styles.brandSubtitle}>Satellite Intelligence</div>
+          <div style={styles.brandSubtitle}>Weather Station Intelligence</div>
         </div>
       </div>
 
       {/* Mission Badge */}
       <div style={styles.missionTag}>
         <span style={styles.missionDot}></span>
-        <span>ORBITAL MONITORING / SIH</span>
+        <span>AWS MONITORING / SIH</span>
       </div>
 
       {/* Navigation */}
@@ -56,19 +56,19 @@ export default function Sidebar({ activeTab, setActiveTab, systemHealth, isBacke
             >
               <Icon 
                 size={18} 
-                color={isActive ? '#0284c7' : '#64748b'} 
+                color={isActive ? 'var(--primary-color)' : 'var(--text-muted)'} 
                 style={{ flexShrink: 0 }}
               />
               <div style={styles.navTextContainer}>
                 <span style={{
                   ...styles.navLabel,
-                  color: isActive ? '#0369a1' : '#334155',
+                  color: isActive ? 'var(--primary-color)' : 'var(--text-main)',
                 }}>
                   {item.label}
                 </span>
                 <span style={{
                   ...styles.navDesc,
-                  color: isActive ? '#0284c7' : '#94a3b8',
+                  color: isActive ? 'var(--primary-color)' : 'var(--text-muted)',
                 }}>
                   {item.desc}
                 </span>
@@ -84,15 +84,15 @@ export default function Sidebar({ activeTab, setActiveTab, systemHealth, isBacke
         <div style={styles.statusRow}>
           <div style={styles.statusLabel}>
             {isBackendConnected ? (
-              <Wifi size={14} color="#059669" />
+              <Wifi size={14} color="var(--status-normal-text)" />
             ) : (
-              <WifiOff size={14} color="#dc2626" />
+              <WifiOff size={14} color="var(--status-critical-text)" />
             )}
             <span>Backend Link</span>
           </div>
           <span style={{
             ...styles.statusValue,
-            color: isBackendConnected ? '#059669' : '#dc2626'
+            color: isBackendConnected ? 'var(--status-normal-text)' : 'var(--status-critical-text)'
           }}>
             {isBackendConnected ? 'CONNECTED' : 'OFFLINE'}
           </span>
@@ -100,12 +100,12 @@ export default function Sidebar({ activeTab, setActiveTab, systemHealth, isBacke
 
         <div style={styles.statusRow}>
           <div style={styles.statusLabel}>
-            <Cpu size={14} color="#0284c7" />
+            <Cpu size={14} color="var(--primary-color)" />
             <span>ML Engine</span>
           </div>
           <span style={{
             ...styles.statusValue,
-            color: systemHealth?.model_loaded ? '#059669' : '#d97706'
+            color: systemHealth?.model_loaded ? 'var(--status-normal-text)' : 'var(--status-warning-text)'
           }}>
             {systemHealth?.model_loaded ? 'READY' : 'STANDBY'}
           </span>
@@ -122,12 +122,13 @@ export default function Sidebar({ activeTab, setActiveTab, systemHealth, isBacke
 const styles = {
   sidebar: {
     width: 'var(--sidebar-width)',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'var(--bg-card)',
     borderRight: '1px solid var(--border-subtle)',
     display: 'flex',
     flexDirection: 'column',
     flexShrink: 0,
     zIndex: 20,
+    transition: 'background-color 0.25s ease, border-color 0.25s ease',
   },
   brandContainer: {
     display: 'flex',
@@ -139,8 +140,8 @@ const styles = {
     width: '38px',
     height: '38px',
     borderRadius: '8px',
-    background: '#eff6ff',
-    border: '1px solid #bfdbfe',
+    background: 'rgba(2, 132, 199, 0.1)',
+    border: '1px solid rgba(2, 132, 199, 0.25)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -149,12 +150,12 @@ const styles = {
     fontSize: '1.05rem',
     fontWeight: '700',
     letterSpacing: '0.04em',
-    color: '#0f172a',
+    color: 'var(--text-main)',
     fontFamily: 'var(--font-mono)',
   },
   brandSubtitle: {
-    fontSize: '0.72rem',
-    color: '#0284c7',
+    fontSize: '0.70rem',
+    color: 'var(--primary-color)',
     fontWeight: '600',
     letterSpacing: '0.04em',
     textTransform: 'uppercase',
@@ -163,11 +164,11 @@ const styles = {
     margin: '0 16px 16px 16px',
     padding: '6px 10px',
     borderRadius: '4px',
-    background: '#f1f5f9',
+    background: 'var(--bg-canvas)',
     border: '1px solid var(--border-subtle)',
     fontSize: '0.67rem',
     fontFamily: 'var(--font-mono)',
-    color: '#475569',
+    color: 'var(--text-muted)',
     fontWeight: '500',
     display: 'flex',
     alignItems: 'center',
@@ -177,7 +178,7 @@ const styles = {
     width: '6px',
     height: '6px',
     borderRadius: '50%',
-    backgroundColor: '#0284c7',
+    backgroundColor: 'var(--primary-color)',
   },
   nav: {
     flex: 1,
@@ -201,8 +202,8 @@ const styles = {
     transition: 'all 0.15s ease',
   },
   navButtonActive: {
-    background: '#eff6ff',
-    borderColor: '#bfdbfe',
+    background: 'rgba(2, 132, 199, 0.1)',
+    borderColor: 'rgba(2, 132, 199, 0.3)',
   },
   navTextContainer: {
     display: 'flex',
@@ -221,13 +222,13 @@ const styles = {
     top: '20%',
     height: '60%',
     width: '3px',
-    backgroundColor: '#0284c7',
+    backgroundColor: 'var(--primary-color)',
     borderRadius: '2px 0 0 2px',
   },
   bottomStatus: {
     padding: '16px',
     borderTop: '1px solid var(--border-subtle)',
-    backgroundColor: '#f8fafc',
+    backgroundColor: 'var(--bg-canvas)',
     display: 'flex',
     flexDirection: 'column',
     gap: '8px',
@@ -242,7 +243,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '6px',
-    color: '#475569',
+    color: 'var(--text-muted)',
   },
   statusValue: {
     fontFamily: 'var(--font-mono)',
@@ -253,7 +254,7 @@ const styles = {
     marginTop: '4px',
     fontSize: '0.67rem',
     fontFamily: 'var(--font-mono)',
-    color: '#94a3b8',
+    color: 'var(--text-muted)',
     textAlign: 'center',
   },
 };

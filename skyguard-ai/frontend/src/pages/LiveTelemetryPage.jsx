@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import CoreSensorCards from '../components/CoreSensorCards';
 import TelemetryChart from '../components/TelemetryChart';
-import { Radio, Play, Pause, RefreshCw, Filter, Layers } from 'lucide-react';
+import { Play, Pause, RefreshCw, Filter, Layers } from 'lucide-react';
+import { formatToIST } from '../utils/dateUtils';
 
 export default function LiveTelemetryPage({
   telemetryData = [],
@@ -12,7 +13,11 @@ export default function LiveTelemetryPage({
   selectedStation,
   setSelectedStation,
 }) {
-  const stations = ['ALL', 'AWS-001', 'AWS-002', 'AWS-003', 'AWS-004', 'AWS-005'];
+  const stations = [
+    'ALL', 
+    'AWS-001', 'AWS-002', 'AWS-003', 'AWS-004', 'AWS-005', 
+    'AWS-006', 'AWS-007', 'AWS-008', 'AWS-009', 'AWS-010'
+  ];
   const latest = telemetryData && telemetryData.length > 0 ? telemetryData[0] : null;
 
   return (
@@ -22,7 +27,7 @@ export default function LiveTelemetryPage({
         <div style={styles.leftInfo}>
           <div style={styles.streamBadge}>
             <span className="live-pulse"></span>
-            <span>NEAR REAL-TIME TELEMETRY FEED</span>
+            <span>NEAR REAL-TIME TELEMETRY FEED (IST)</span>
           </div>
           <span style={styles.streamDetails}>
             Polling REST API every 6 seconds • Zero backend WebSocket overhead
@@ -32,13 +37,13 @@ export default function LiveTelemetryPage({
         <div style={styles.rightControls}>
           {/* Station Filter */}
           <div style={styles.stationFilter}>
-            <Filter size={13} color="#64748b" />
+            <Filter size={13} color="var(--primary-color)" />
             <select
-              value={selectedStation}
+              value={selectedStation || 'ALL'}
               onChange={(e) => setSelectedStation(e.target.value === 'ALL' ? null : e.target.value)}
               style={styles.select}
             >
-              <option value="ALL">All Satellite Nodes</option>
+              <option value="ALL">All Weather Stations</option>
               {stations.filter(s => s !== 'ALL').map(s => (
                 <option key={s} value={s}>{s}</option>
               ))}
@@ -50,9 +55,9 @@ export default function LiveTelemetryPage({
             onClick={() => setAutoRefresh(!autoRefresh)}
             style={{
               ...styles.controlBtn,
-              background: autoRefresh ? '#ecfdf5' : '#f1f5f9',
-              borderColor: autoRefresh ? '#a7f3d0' : '#e2e8f0',
-              color: autoRefresh ? '#059669' : '#64748b',
+              background: autoRefresh ? 'rgba(16, 185, 129, 0.12)' : 'var(--bg-canvas)',
+              borderColor: autoRefresh ? 'rgba(16, 185, 129, 0.3)' : 'var(--border-subtle)',
+              color: autoRefresh ? 'var(--status-normal-text)' : 'var(--text-muted)',
             }}
           >
             {autoRefresh ? <Pause size={13} /> : <Play size={13} />}
@@ -61,7 +66,7 @@ export default function LiveTelemetryPage({
 
           {/* Manual Refresh */}
           <button onClick={onRefresh} disabled={loading} style={styles.iconBtn} title="Fetch new packets">
-            <RefreshCw size={14} color="#64748b" style={{ animation: loading ? 'spin 1s linear infinite' : 'none' }} />
+            <RefreshCw size={14} color="var(--text-muted)" style={{ animation: loading ? 'spin 1s linear infinite' : 'none' }} />
           </button>
         </div>
       </div>
@@ -76,11 +81,11 @@ export default function LiveTelemetryPage({
       <div className="telemetry-card">
         <div className="card-header">
           <div className="card-title">
-            <Layers size={18} color="#0284c7" />
+            <Layers size={18} color="var(--primary-color)" />
             <span>Incoming Observation Log ({telemetryData.length} Recent Packets)</span>
           </div>
-          <span style={{ fontSize: '0.74rem', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
-            Filter: {selectedStation || 'ALL NODES'}
+          <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+            Filter: {selectedStation || 'ALL WEATHER STATIONS'}
           </span>
         </div>
 
@@ -88,8 +93,8 @@ export default function LiveTelemetryPage({
           <table className="telemetry-table">
             <thead>
               <tr>
-                <th>Timestamp</th>
-                <th>Node ID</th>
+                <th>Timestamp (IST)</th>
+                <th>Station ID</th>
                 <th>Temp (°C)</th>
                 <th>Pressure (hPa)</th>
                 <th>Humidity (%)</th>
@@ -101,29 +106,29 @@ export default function LiveTelemetryPage({
               {loading && telemetryData.length === 0 ? (
                 <tr>
                   <td colSpan="7" style={{ textAlign: 'center', padding: '24px', color: 'var(--text-muted)' }}>
-                    Receiving satellite packets...
+                    Receiving AWS telemetry packets...
                   </td>
                 </tr>
               ) : telemetryData.slice(0, 15).map((row, idx) => {
                 const isAnom = row.anomaly === true;
                 return (
                   <tr key={idx}>
-                    <td className="mono-value" style={{ fontSize: '0.76rem', color: '#334155' }}>
-                      {row.timestamp}
+                    <td className="mono-value" style={{ fontSize: '0.74rem', color: 'var(--text-main)' }}>
+                      {formatToIST(row.timestamp, 'full')}
                     </td>
                     <td>
-                      <span className="badge badge-info">{row.station_id || 'SAT-001'}</span>
+                      <span className="badge badge-info">{row.station_id || 'AWS-001'}</span>
                     </td>
-                    <td className="mono-value" style={{ color: Number(row.temperature) > 40 ? '#ea580c' : '#0f172a', fontWeight: Number(row.temperature) > 40 ? '600' : 'normal' }}>
-                      {row.temperature != null ? Number(row.temperature).toFixed(2) : '--'}
+                    <td className="mono-value" style={{ color: Number(row.temperature) > 40 ? '#ea580c' : 'var(--text-main)', fontWeight: Number(row.temperature) > 40 ? '600' : 'normal' }}>
+                      {row.temperature != null ? Number(row.temperature).toFixed(1) : '--'}
                     </td>
-                    <td className="mono-value" style={{ color: Number(row.pressure) > 1025 || Number(row.pressure) < 995 ? '#0284c7' : '#0f172a', fontWeight: Number(row.pressure) > 1025 || Number(row.pressure) < 995 ? '600' : 'normal' }}>
-                      {row.pressure != null ? Number(row.pressure).toFixed(2) : '--'}
+                    <td className="mono-value" style={{ color: Number(row.pressure) > 1025 || Number(row.pressure) < 995 ? '#0284c7' : 'var(--text-main)', fontWeight: Number(row.pressure) > 1025 || Number(row.pressure) < 995 ? '600' : 'normal' }}>
+                      {row.pressure != null ? Number(row.pressure).toFixed(1) : '--'}
                     </td>
-                    <td className="mono-value" style={{ color: Number(row.humidity) > 90 ? '#0284c7' : '#0f172a', fontWeight: Number(row.humidity) > 90 ? '600' : 'normal' }}>
-                      {row.humidity != null ? Number(row.humidity).toFixed(2) : '--'}
+                    <td className="mono-value" style={{ color: Number(row.humidity) > 90 ? '#0284c7' : 'var(--text-main)', fontWeight: Number(row.humidity) > 90 ? '600' : 'normal' }}>
+                      {row.humidity != null ? Number(row.humidity).toFixed(1) : '--'}
                     </td>
-                    <td className="mono-value" style={{ color: isAnom ? '#dc2626' : '#059669', fontSize: '0.75rem', fontWeight: '600' }}>
+                    <td className="mono-value" style={{ color: isAnom ? '#dc2626' : 'var(--status-normal-text)', fontSize: '0.75rem', fontWeight: '600' }}>
                       {row.anomaly_score != null ? Number(row.anomaly_score).toFixed(4) : '--'}
                     </td>
                     <td>
@@ -150,7 +155,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '12px 18px',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'var(--bg-card)',
     border: '1px solid var(--border-subtle)',
     borderRadius: 'var(--radius-md)',
     boxShadow: 'var(--shadow-card)',
@@ -169,12 +174,12 @@ const styles = {
     gap: '6px',
     fontSize: '0.74rem',
     fontWeight: '700',
-    color: '#0284c7',
+    color: 'var(--primary-color)',
     fontFamily: 'var(--font-mono)',
   },
   streamDetails: {
     fontSize: '0.74rem',
-    color: '#64748b',
+    color: 'var(--text-muted)',
   },
   rightControls: {
     display: 'flex',
@@ -185,7 +190,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '6px',
-    background: '#f8fafc',
+    background: 'var(--bg-canvas)',
     padding: '4px 8px',
     borderRadius: 'var(--radius-sm)',
     border: '1px solid var(--border-subtle)',
@@ -193,7 +198,7 @@ const styles = {
   select: {
     background: 'transparent',
     border: 'none',
-    color: '#0f172a',
+    color: 'var(--text-main)',
     fontSize: '0.76rem',
     fontFamily: 'var(--font-mono)',
     outline: 'none',
@@ -214,7 +219,7 @@ const styles = {
   iconBtn: {
     padding: '7px',
     borderRadius: 'var(--radius-sm)',
-    background: '#ffffff',
+    background: 'var(--bg-card)',
     border: '1px solid var(--border-subtle)',
     cursor: 'pointer',
     display: 'flex',

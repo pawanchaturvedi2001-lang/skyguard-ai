@@ -3,7 +3,7 @@ import SummaryCards from '../components/SummaryCards';
 import CoreSensorCards from '../components/CoreSensorCards';
 import TelemetryChart from '../components/TelemetryChart';
 import AnomalyFeed from '../components/AnomalyFeed';
-import { Cpu, ShieldCheck, Radio, ArrowRight } from 'lucide-react';
+import { Cpu } from 'lucide-react';
 
 export default function OverviewPage({
   summaryData,
@@ -22,16 +22,16 @@ export default function OverviewPage({
       <div style={styles.topBanner}>
         <div>
           <h2 style={styles.bannerTitle}>
-            Satellite Telemetry Intelligence & Anomaly Detection
+            Automatic Weather Station Intelligence & Anomaly Detection
           </h2>
           <p style={styles.bannerSubtitle}>
-            Real-time multi-sensor telemetry monitoring with unsupervised Isolation Forest outlier identification.
+            Real-time multi-sensor AWS telemetry monitoring with unsupervised Isolation Forest outlier identification.
           </p>
         </div>
         <div style={styles.modelStatusPill}>
-          <Cpu size={15} color="#0284c7" />
-          <span style={{ color: '#64748b' }}>Algorithm:</span>
-          <span style={{ color: '#0f172a', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
+          <Cpu size={15} color="var(--primary-color)" />
+          <span style={{ color: 'var(--text-muted)' }}>Algorithm:</span>
+          <span style={{ color: 'var(--text-main)', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
             {modelInfo?.algorithm || 'Isolation Forest (200 Trees)'}
           </span>
           <span className="badge badge-normal" style={{ marginLeft: '4px' }}>
@@ -71,12 +71,12 @@ const styles = {
   bannerTitle: {
     fontSize: '1.25rem',
     fontWeight: '700',
-    color: '#0f172a',
+    color: 'var(--text-main)',
     letterSpacing: '-0.01em',
   },
   bannerSubtitle: {
     fontSize: '0.80rem',
-    color: '#64748b',
+    color: 'var(--text-muted)',
     marginTop: '3px',
   },
   modelStatusPill: {
@@ -85,7 +85,7 @@ const styles = {
     gap: '8px',
     padding: '8px 14px',
     borderRadius: 'var(--radius-sm)',
-    background: '#ffffff',
+    background: 'var(--bg-card)',
     border: '1px solid var(--border-subtle)',
     boxShadow: 'var(--shadow-card)',
     fontSize: '0.78rem',

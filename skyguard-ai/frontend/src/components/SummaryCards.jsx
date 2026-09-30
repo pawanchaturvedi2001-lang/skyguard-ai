@@ -21,10 +21,10 @@ export default function SummaryCards({ summaryData, loading }) {
     {
       title: 'NOMINAL READINGS',
       value: normal,
-      sub: 'Within Invariant Orbit Bounds',
+      sub: 'Within Baseline Nominal Bounds',
       icon: ShieldCheck,
       iconColor: '#059669',
-      iconBg: '#ecfdf5',
+      iconBg: 'rgba(16, 185, 129, 0.1)',
     },
     {
       title: 'DETECTED ANOMALIES',
@@ -32,7 +32,7 @@ export default function SummaryCards({ summaryData, loading }) {
       sub: `${highSev} High / ${medSev} Medium Severity`,
       icon: AlertOctagon,
       iconColor: '#dc2626',
-      iconBg: '#fef2f2',
+      iconBg: 'rgba(239, 68, 68, 0.1)',
     },
     {
       title: 'CONTAMINATION RATE',
@@ -40,7 +40,7 @@ export default function SummaryCards({ summaryData, loading }) {
       sub: 'Isolation Forest Baseline: 1.0%',
       icon: Percent,
       iconColor: '#d97706',
-      iconBg: '#fffbeb',
+      iconBg: 'rgba(245, 158, 11, 0.1)',
     },
   ];
 
@@ -67,11 +67,11 @@ export default function SummaryCards({ summaryData, loading }) {
               </div>
             </div>
 
-            <div className="mono-value" style={{ fontSize: '1.75rem', fontWeight: '700', color: '#0f172a', marginBottom: '4px' }}>
+            <div className="mono-value" style={{ fontSize: '1.75rem', fontWeight: '700', color: 'var(--text-main)', marginBottom: '4px' }}>
               {loading ? <span className="skeleton" style={{ display: 'inline-block', width: '90px', height: '32px' }}></span> : card.value}
             </div>
 
-            <div style={{ fontSize: '0.74rem', color: '#64748b' }}>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
               {card.sub}
             </div>
           </div>

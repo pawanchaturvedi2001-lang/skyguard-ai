@@ -1,5 +1,6 @@
 import React from 'react';
-import { Thermometer, Gauge, Droplets, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { Thermometer, Gauge, Droplets } from 'lucide-react';
+import { formatToIST } from '../utils/dateUtils';
 
 export default function CoreSensorCards({ latestTelemetry, loading }) {
   const getStatusBadge = (value, minNorm, maxNorm, isAnomaly) => {
@@ -17,8 +18,10 @@ export default function CoreSensorCards({ latestTelemetry, loading }) {
   const hum = latestTelemetry?.humidity != null ? Number(latestTelemetry.humidity).toFixed(1) : '--';
 
   const isAnom = latestTelemetry?.anomaly === true;
-  const updateTime = latestTelemetry?.timestamp || 'Live Stream Active';
-  const stationId = latestTelemetry?.station_id || 'SAT-001';
+  const updateTimeIST = latestTelemetry?.timestamp 
+    ? formatToIST(latestTelemetry.timestamp, 'time_short') 
+    : 'Realtime';
+  const stationId = latestTelemetry?.station_id || 'AWS-001';
 
   return (
     <div className="grid-cols-3" style={{ marginBottom: '24px' }}>
@@ -26,7 +29,7 @@ export default function CoreSensorCards({ latestTelemetry, loading }) {
       <div className={`telemetry-card ${isAnom && latestTelemetry?.temperature > 40 ? 'highlight' : ''}`}>
         <div className="card-header">
           <div className="card-title">
-            <div style={{ ...styles.iconBox, color: '#ea580c', background: '#fff7ed', border: '1px solid #ffedd5' }}>
+            <div style={{ ...styles.iconBox, color: '#ea580c', background: 'rgba(234, 88, 12, 0.1)', border: '1px solid rgba(234, 88, 12, 0.25)' }}>
               <Thermometer size={18} />
             </div>
             <span>Thermal Subsystem</span>
@@ -40,7 +43,7 @@ export default function CoreSensorCards({ latestTelemetry, loading }) {
             <span style={styles.unit}>°C</span>
           </div>
           <div style={styles.subtext}>
-            <span>Core Satellite Temperature</span>
+            <span>Temperature Sensor</span>
           </div>
         </div>
 
@@ -60,7 +63,7 @@ export default function CoreSensorCards({ latestTelemetry, loading }) {
       <div className={`telemetry-card ${isAnom && (latestTelemetry?.pressure > 1030 || latestTelemetry?.pressure < 990) ? 'highlight' : ''}`}>
         <div className="card-header">
           <div className="card-title">
-            <div style={{ ...styles.iconBox, color: '#0284c7', background: '#eff6ff', border: '1px solid #dbeafe' }}>
+            <div style={{ ...styles.iconBox, color: '#0284c7', background: 'rgba(2, 132, 199, 0.1)', border: '1px solid rgba(2, 132, 199, 0.25)' }}>
               <Gauge size={18} />
             </div>
             <span>Barometric Sensor</span>
@@ -94,7 +97,7 @@ export default function CoreSensorCards({ latestTelemetry, loading }) {
       <div className={`telemetry-card ${isAnom && latestTelemetry?.humidity > 90 ? 'highlight' : ''}`}>
         <div className="card-header">
           <div className="card-title">
-            <div style={{ ...styles.iconBox, color: '#0284c7', background: '#f0f9ff', border: '1px solid #e0f2fe' }}>
+            <div style={{ ...styles.iconBox, color: '#0d9488', background: 'rgba(13, 148, 136, 0.1)', border: '1px solid rgba(13, 148, 136, 0.25)' }}>
               <Droplets size={18} />
             </div>
             <span>Relative Humidity</span>
@@ -118,8 +121,8 @@ export default function CoreSensorCards({ latestTelemetry, loading }) {
             <span className="mono-value" style={styles.footerValue}>30.0 - 80.0 %</span>
           </div>
           <div style={styles.footerItem}>
-            <span style={styles.footerLabel}>Last Ping</span>
-            <span className="mono-value" style={styles.footerValue}>{updateTime.split(' ')[1] || 'Realtime'}</span>
+            <span style={styles.footerLabel}>Last Ping (IST)</span>
+            <span className="mono-value" style={styles.footerValue}>{updateTimeIST}</span>
           </div>
         </div>
       </div>
@@ -147,22 +150,22 @@ const styles = {
   mainNumber: {
     fontSize: '2.4rem',
     fontWeight: '700',
-    color: '#0f172a',
+    color: 'var(--text-main)',
     lineHeight: 1,
   },
   unit: {
     fontSize: '1rem',
     fontWeight: '500',
-    color: '#64748b',
+    color: 'var(--text-muted)',
     fontFamily: 'var(--font-mono)',
   },
   subtext: {
     fontSize: '0.76rem',
-    color: '#64748b',
+    color: 'var(--text-muted)',
     marginTop: '6px',
   },
   cardFooter: {
-    borderTop: '1px solid #f1f5f9',
+    borderTop: '1px solid var(--border-subtle)',
     paddingTop: '12px',
     display: 'flex',
     alignItems: 'center',
@@ -175,13 +178,13 @@ const styles = {
   },
   footerLabel: {
     fontSize: '0.68rem',
-    color: '#94a3b8',
+    color: 'var(--text-muted)',
     textTransform: 'uppercase',
     letterSpacing: '0.04em',
   },
   footerValue: {
     fontSize: '0.75rem',
-    color: '#334155',
+    color: 'var(--text-main)',
     fontWeight: '500',
   },
 };

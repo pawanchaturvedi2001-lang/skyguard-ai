@@ -1,19 +1,11 @@
 import React from 'react';
-import { Cpu, ShieldCheck, CheckCircle2, Server, Sliders, Database, Info } from 'lucide-react';
+import { Cpu, CheckCircle2, Server, Sliders, Info } from 'lucide-react';
 
 export default function ModelStatusPage({ modelInfo, systemHealth, loading }) {
-  const features = modelInfo?.expected_features || [
-    'temperature', 'humidity', 'pressure',
-    'temperature_change', 'humidity_change', 'pressure_change',
-    'temperature_rate', 'humidity_rate', 'pressure_rate',
-    'rolling_temperature_mean', 'rolling_humidity_mean', 'rolling_pressure_mean',
-    'rolling_temperature_std', 'rolling_humidity_std', 'rolling_pressure_std'
-  ];
-
   const featureCategories = [
     {
-      name: 'Primary In-Flight Sensors',
-      desc: 'Raw multi-channel physical measurements',
+      name: 'Primary AWS Station Sensors',
+      desc: 'Raw multi-channel physical AWS observations',
       items: ['temperature', 'humidity', 'pressure'],
       color: '#ea580c'
     },
@@ -25,19 +17,19 @@ export default function ModelStatusPage({ modelInfo, systemHealth, loading }) {
     },
     {
       name: 'Dynamic Velocity / Rate of Change',
-      desc: 'Delta change normalized per elapsed flight minute (Δx / Δt)',
+      desc: 'Delta change normalized per elapsed observation minute (Δx / Δt)',
       items: ['temperature_rate', 'humidity_rate', 'pressure_rate'],
       color: '#0d9488'
     },
     {
       name: 'Moving Average Window (8 Periods)',
-      desc: 'Rolling trajectory mean over 8 consecutive intervals',
+      desc: 'Rolling sensor trend mean over 8 consecutive intervals',
       items: ['rolling_temperature_mean', 'rolling_humidity_mean', 'rolling_pressure_mean'],
       color: '#7c3aed'
     },
     {
       name: 'Variance & Volatility (8 Periods)',
-      desc: 'Rolling standard deviation detecting signal jitter/instability',
+      desc: 'Rolling standard deviation detecting sensor jitter/instability',
       items: ['rolling_temperature_std', 'rolling_humidity_std', 'rolling_pressure_std'],
       color: '#db2777'
     },
@@ -47,10 +39,10 @@ export default function ModelStatusPage({ modelInfo, systemHealth, loading }) {
     <div>
       {/* Header */}
       <div style={{ marginBottom: '22px' }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#0f172a' }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--text-main)' }}>
           ML Intelligence Architecture & System Health
         </h2>
-        <p style={{ fontSize: '0.80rem', color: '#64748b', marginTop: '2px' }}>
+        <p style={{ fontSize: '0.80rem', color: 'var(--text-muted)', marginTop: '2px' }}>
           Technical inspection of trained Isolation Forest estimators, feature space engineering, and microservice status.
         </p>
       </div>
@@ -60,15 +52,15 @@ export default function ModelStatusPage({ modelInfo, systemHealth, loading }) {
         <div className="telemetry-card">
           <div className="card-header">
             <span className="card-subtitle">REST API ENDPOINT</span>
-            <Server size={16} color="#059669" />
+            <Server size={16} color="var(--status-normal-text)" />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '8px 0' }}>
-            <CheckCircle2 size={20} color="#059669" />
-            <span style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0f172a' }}>
+            <CheckCircle2 size={20} color="var(--status-normal-text)" />
+            <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)' }}>
               {systemHealth?.api?.toUpperCase() || 'OPERATIONAL'}
             </span>
           </div>
-          <p style={{ fontSize: '0.74rem', color: '#64748b' }}>
+          <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
             Uvicorn ASGI • FastAPI 0.141 • Low-latency REST
           </p>
         </div>
@@ -76,15 +68,15 @@ export default function ModelStatusPage({ modelInfo, systemHealth, loading }) {
         <div className="telemetry-card">
           <div className="card-header">
             <span className="card-subtitle">MODEL ARTIFACT STATUS</span>
-            <Cpu size={16} color="#0284c7" />
+            <Cpu size={16} color="var(--primary-color)" />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '8px 0' }}>
-            <CheckCircle2 size={20} color="#059669" />
-            <span style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0f172a' }}>
+            <CheckCircle2 size={20} color="var(--status-normal-text)" />
+            <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)' }}>
               {systemHealth?.model_loaded ? 'LOADED IN RAM' : 'STANDBY'}
             </span>
           </div>
-          <p style={{ fontSize: '0.74rem', color: '#64748b' }}>
+          <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
             isolation_forest.pkl (200 Ensemble Trees)
           </p>
         </div>
@@ -92,15 +84,15 @@ export default function ModelStatusPage({ modelInfo, systemHealth, loading }) {
         <div className="telemetry-card">
           <div className="card-header">
             <span className="card-subtitle">PREPROCESSING PIPELINE</span>
-            <Sliders size={16} color="#0284c7" />
+            <Sliders size={16} color="var(--primary-color)" />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '8px 0' }}>
-            <CheckCircle2 size={20} color="#059669" />
-            <span style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0f172a' }}>
+            <CheckCircle2 size={20} color="var(--status-normal-text)" />
+            <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-main)' }}>
               {systemHealth?.scaler_loaded ? 'FITTED SCALER' : 'STANDBY'}
             </span>
           </div>
-          <p style={{ fontSize: '0.74rem', color: '#64748b' }}>
+          <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
             scaler.pkl (StandardScaler fitted on 28.8k observations)
           </p>
         </div>
@@ -111,7 +103,7 @@ export default function ModelStatusPage({ modelInfo, systemHealth, loading }) {
         <div className="telemetry-card">
           <div className="card-header">
             <div className="card-title">
-              <Cpu size={18} color="#0284c7" />
+              <Cpu size={18} color="var(--primary-color)" />
               <span>Isolation Forest Hyperparameters</span>
             </div>
             <span className="badge badge-normal">VERIFIED ACTIVE</span>
@@ -148,43 +140,43 @@ export default function ModelStatusPage({ modelInfo, systemHealth, loading }) {
         <div className="telemetry-card">
           <div className="card-header">
             <div className="card-title">
-              <Info size={18} color="#0284c7" />
+              <Info size={18} color="var(--primary-color)" />
               <span>Anomaly Score & Severity Mapping</span>
             </div>
           </div>
 
-          <p style={{ fontSize: '0.78rem', color: '#475569', marginBottom: '14px', lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '14px', lineHeight: 1.5 }}>
             Isolation Forest isolates abnormal observations by partitioning randomly selected features. Anomalies require significantly fewer tree splits to isolate than nominal clusters.
           </p>
 
           <div style={styles.severityExplainGrid}>
-            <div style={{ ...styles.sevBox, borderColor: '#a7f3d0', background: '#ecfdf5' }}>
+            <div style={{ ...styles.sevBox, borderColor: 'rgba(16, 185, 129, 0.3)', background: 'rgba(16, 185, 129, 0.08)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#059669' }}>NOMINAL</span>
-                <span className="mono-value" style={{ fontSize: '0.72rem', color: '#059669', fontWeight: 600 }}>Score ≥ 0.0</span>
+                <span style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--status-normal-text)' }}>NOMINAL</span>
+                <span className="mono-value" style={{ fontSize: '0.72rem', color: 'var(--status-normal-text)', fontWeight: 600 }}>Score ≥ 0.0</span>
               </div>
-              <p style={{ fontSize: '0.70rem', color: '#047857', marginTop: '4px' }}>
+              <p style={{ fontSize: '0.70rem', color: 'var(--status-normal-text)', marginTop: '4px' }}>
                 Inliers clustered within expected operational thresholds.
               </p>
             </div>
 
-            <div style={{ ...styles.sevBox, borderColor: '#fde68a', background: '#fffbeb' }}>
+            <div style={{ ...styles.sevBox, borderColor: 'rgba(245, 158, 11, 0.3)', background: 'rgba(245, 158, 11, 0.08)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#d97706' }}>MEDIUM SEVERITY</span>
-                <span className="mono-value" style={{ fontSize: '0.72rem', color: '#d97706', fontWeight: 600 }}>Conf 70% - 85%</span>
+                <span style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--status-warning-text)' }}>MEDIUM SEVERITY</span>
+                <span className="mono-value" style={{ fontSize: '0.72rem', color: 'var(--status-warning-text)', fontWeight: 600 }}>Conf 70% - 85%</span>
               </div>
-              <p style={{ fontSize: '0.70rem', color: '#b45309', marginTop: '4px' }}>
-                Significant transient deviation (e.g. rapid moisture or sensor drift).
+              <p style={{ fontSize: '0.70rem', color: 'var(--status-warning-text)', marginTop: '4px' }}>
+                Significant transient deviation (e.g. rapid moisture surge or sensor drift).
               </p>
             </div>
 
-            <div style={{ ...styles.sevBox, borderColor: '#fecaca', background: '#fef2f2' }}>
+            <div style={{ ...styles.sevBox, borderColor: 'rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.08)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.76rem', fontWeight: 700, color: '#dc2626' }}>HIGH SEVERITY</span>
-                <span className="mono-value" style={{ fontSize: '0.72rem', color: '#dc2626', fontWeight: 600 }}>Conf ≥ 85%</span>
+                <span style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--status-critical-text)' }}>HIGH SEVERITY</span>
+                <span className="mono-value" style={{ fontSize: '0.72rem', color: 'var(--status-critical-text)', fontWeight: 600 }}>Conf ≥ 85%</span>
               </div>
-              <p style={{ fontSize: '0.70rem', color: '#b91c1c', marginTop: '4px' }}>
-                Acute thermal spike or catastrophic pressure decompression.
+              <p style={{ fontSize: '0.70rem', color: 'var(--status-critical-text)', marginTop: '4px' }}>
+                Acute thermal spike or extreme barometric pressure decompression.
               </p>
             </div>
           </div>
@@ -195,10 +187,10 @@ export default function ModelStatusPage({ modelInfo, systemHealth, loading }) {
       <div className="telemetry-card">
         <div className="card-header">
           <div className="card-title">
-            <Sliders size={18} color="#0284c7" />
+            <Sliders size={18} color="var(--primary-color)" />
             <span>Complete 15-Feature Engineering Hierarchy</span>
           </div>
-          <span style={{ fontSize: '0.74rem', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+          <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
             StandardScaler Input Vector
           </span>
         </div>
@@ -208,9 +200,9 @@ export default function ModelStatusPage({ modelInfo, systemHealth, loading }) {
             <div key={idx} style={styles.catCard}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: cat.color }}></span>
-                <span style={{ fontSize: '0.80rem', fontWeight: 600, color: '#0f172a' }}>{cat.name}</span>
+                <span style={{ fontSize: '0.80rem', fontWeight: 600, color: 'var(--text-main)' }}>{cat.name}</span>
               </div>
-              <p style={{ fontSize: '0.70rem', color: '#64748b', marginBottom: '10px' }}>
+              <p style={{ fontSize: '0.70rem', color: 'var(--text-muted)', marginBottom: '10px' }}>
                 {cat.desc}
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -239,17 +231,17 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '8px 10px',
-    backgroundColor: '#f8fafc',
+    backgroundColor: 'var(--bg-canvas)',
     borderRadius: 'var(--radius-sm)',
-    border: '1px solid #f1f5f9',
+    border: '1px solid var(--border-subtle)',
     fontSize: '0.78rem',
   },
   paramKey: {
-    color: '#64748b',
+    color: 'var(--text-muted)',
   },
   paramVal: {
     fontWeight: '600',
-    color: '#0f172a',
+    color: 'var(--text-main)',
   },
   severityExplainGrid: {
     display: 'flex',
@@ -267,7 +259,7 @@ const styles = {
     gap: '14px',
   },
   catCard: {
-    backgroundColor: '#f8fafc',
+    backgroundColor: 'var(--bg-canvas)',
     border: '1px solid var(--border-subtle)',
     borderRadius: 'var(--radius-sm)',
     padding: '14px',
@@ -275,10 +267,10 @@ const styles = {
   featBadge: {
     fontSize: '0.70rem',
     padding: '4px 8px',
-    background: '#ffffff',
-    border: '1px solid #cbd5e1',
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border-subtle)',
     borderRadius: '4px',
-    color: '#0284c7',
+    color: 'var(--primary-color)',
     fontWeight: '600',
   },
 };

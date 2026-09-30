@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { apiService } from '../services/api';
+import { formatToIST } from '../utils/dateUtils';
 import { 
   CloudSun, 
   CloudRain, 
@@ -462,7 +463,7 @@ export default function CityWeatherPage() {
                   <span style={{ fontSize: '0.74rem', color: '#94a3b8' }}>•</span>
                   <span style={{ fontSize: '0.74rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <Clock size={12} color="#64748b" />
-                    Observed: {currentWeather.observation_time}
+                    Observed: {formatToIST(currentWeather.observation_time, 'full')}
                   </span>
                 </div>
               </div>
@@ -791,8 +792,8 @@ export default function CityWeatherPage() {
                         {getAnalysisBadge(cityData.analysis_status)}
                       </td>
 
-                      <td className="mono-value" style={{ fontSize: '0.74rem', color: '#64748b' }}>
-                        {cityData.observation_time?.split(' ')[1] || cityData.observation_time || 'Recent'}
+                      <td className="mono-value" style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                        {cityData.observation_time ? formatToIST(cityData.observation_time, 'time_short') : 'Recent'}
                       </td>
 
                       <td style={{ textAlign: 'right' }}>

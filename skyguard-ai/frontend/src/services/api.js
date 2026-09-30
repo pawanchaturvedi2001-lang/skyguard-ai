@@ -64,19 +64,29 @@ export const apiService = {
   },
 
   // Telemetry Records
-  async getTelemetry({ limit = 50, offset = 0, station_id = null } = {}) {
+  async getTelemetry({ limit = 50, offset = 0, station_id = null, state = null, city = null } = {}) {
     const params = { limit, offset };
     if (station_id) params.station_id = station_id;
+    if (state) params.state = state;
+    if (city) params.city = city;
     const res = await apiClient.get('/api/telemetry', { params });
     return res.data;
   },
 
   // Anomalies Records
-  async getAnomalies({ limit = 50, offset = 0, severity = null, station_id = null } = {}) {
+  async getAnomalies({ limit = 50, offset = 0, severity = null, station_id = null, state = null, city = null } = {}) {
     const params = { limit, offset };
     if (severity) params.severity = severity;
     if (station_id) params.station_id = station_id;
+    if (state) params.state = state;
+    if (city) params.city = city;
     const res = await apiClient.get('/api/anomalies', { params });
+    return res.data;
+  },
+
+  // AWS Stations Registry
+  async getStations() {
+    const res = await apiClient.get('/api/stations');
     return res.data;
   },
 

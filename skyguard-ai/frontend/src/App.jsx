@@ -13,6 +13,7 @@ import './styles/global.css';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [theme, setTheme] = useState(() => localStorage.getItem('skyguard_theme') || 'light');
   const [isBackendConnected, setIsBackendConnected] = useState(true);
   const [systemHealth, setSystemHealth] = useState(null);
   const [modelInfo, setModelInfo] = useState(null);
@@ -26,6 +27,16 @@ export default function App() {
   const [autoRefresh, setAutoRefresh] = useState(true);
 
   const isMountedRef = useRef(true);
+
+  // Sync theme attribute and localStorage
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('skyguard_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  };
 
   // Centralized telemetry and system data loader
   const loadDashboardData = useCallback(async (isSilent = false) => {
@@ -86,15 +97,15 @@ export default function App() {
   const pageHeaders = {
     overview: {
       title: 'Mission Control Overview',
-      subtitle: 'Real-time orbital telemetry monitoring and AI-powered anomaly identification',
+      subtitle: 'Real-time AWS sensor telemetry monitoring and AI-powered anomaly identification',
     },
     live: {
       title: 'Live Sensor Telemetry Feed',
-      subtitle: 'Continuous multi-channel sensor telemetry streams and trajectory charts',
+      subtitle: 'Continuous multi-channel AWS sensor telemetry streams and trend charts',
     },
     predict: {
       title: 'Real-Time Anomaly Inference',
-      subtitle: 'Evaluate live telemetry packets against the trained 15-feature Isolation Forest model',
+      subtitle: 'Evaluate live sensor telemetry packets against the trained 15-feature Isolation Forest model',
     },
     weather: {
       title: 'India Real-Time Weather Network',
@@ -102,7 +113,7 @@ export default function App() {
     },
     history: {
       title: 'Telemetry & Incident Archive',
-      subtitle: 'Complete historical satellite telemetry database and detected anomaly events',
+      subtitle: 'Complete historical automatic weather station telemetry database and detected anomaly events',
     },
     model: {
       title: 'ML Model Intelligence & Health',
@@ -114,7 +125,7 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* Persistent Aerospace Sidebar */}
+      {/* Persistent AWS Monitoring Sidebar */}
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -124,7 +135,7 @@ export default function App() {
 
       {/* Main Layout Area */}
       <div className="main-layout">
-        {/* Sticky Header with UTC clock and status */}
+        {/* Sticky Header with IST clock and theme toggle */}
         <Header
           title={currentHeader.title}
           subtitle={currentHeader.subtitle}
@@ -132,6 +143,8 @@ export default function App() {
           isRefreshing={isRefreshing}
           isBackendConnected={isBackendConnected}
           unreadAlertsCount={summaryData?.total_anomalies || 0}
+          theme={theme}
+          toggleTheme={toggleTheme}
         />
 
         {/* Content View Container */}

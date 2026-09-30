@@ -1,12 +1,22 @@
+/* ==============================================================================
+   SkyGuard AI - Theming Engine (Light Mode Default + Dark Mode Support)
+   Smooth transition enabled, high-contrast accessible typography
+   ============================================================================== */
+
 :root {
-  /* Color Palette - Clean Professional Aerospace Light */
+  /* Theme Mode Identifier */
+  --theme-mode: 'light';
+
+  /* Color Palette - Clean Professional Aerospace Light (Default) */
   --bg-space: #f8fafc;
   --bg-base: #f1f5f9;
   --bg-surface: #ffffff;
-  --bg-surface-hover: #f8fafc;
+  --bg-surface-hover: #f1f5f9;
   --bg-card: #ffffff;
   --bg-card-subtle: #f8fafc;
   --bg-input: #ffffff;
+  --bg-modal: #ffffff;
+  --bg-modal-overlay: rgba(15, 23, 42, 0.45);
   
   /* Borders & Dividers */
   --border-subtle: #e2e8f0;
@@ -20,7 +30,7 @@
   --blue: #0284c7;
   --blue-dark: #1d4ed8;
   
-  /* Status Colors (Optimized for High Contrast on Light Backgrounds) */
+  /* Status Colors */
   --status-normal: #059669;
   --status-normal-bg: #ecfdf5;
   --status-normal-border: #a7f3d0;
@@ -32,16 +42,20 @@
   --status-critical: #dc2626;
   --status-critical-bg: #fef2f2;
   --status-critical-border: #fecaca;
+
+  --badge-info-bg: #eff6ff;
+  --badge-info-color: #0284c7;
+  --badge-info-border: #bfdbfe;
   
   /* Typography Colors */
   --text-main: #0f172a;
-  --text-secondary: #475569;
+  --text-secondary: #334155;
   --text-muted: #64748b;
   --text-dim: #94a3b8;
   
   /* Fonts */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   
   /* Layout Dimensions */
   --sidebar-width: 250px;
@@ -54,4 +68,66 @@
   --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
   --shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
   --shadow-cyan-sm: 0 0 12px rgba(2, 132, 199, 0.15);
+}
+
+/* ==============================================================================
+   Dark Mode Palette - High Contrast, Deep Aerospace Navy & Charcoal
+   ============================================================================== */
+[data-theme="dark"] {
+  --theme-mode: 'dark';
+
+  --bg-space: #090d16;
+  --bg-base: #0f172a;
+  --bg-surface: #131c2e;
+  --bg-surface-hover: #1e293b;
+  --bg-card: #131c2e;
+  --bg-card-subtle: #0f172a;
+  --bg-input: #0b1120;
+  --bg-modal: #131c2e;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.75);
+  
+  /* Borders & Dividers */
+  --border-subtle: #243048;
+  --border-light: #334155;
+  --border-focus: #38bdf8;
+  
+  /* Telemetry Accents */
+  --cyan: #38bdf8;
+  --cyan-glow: rgba(56, 189, 248, 0.25);
+  --cyan-subtle: rgba(56, 189, 248, 0.12);
+  --blue: #38bdf8;
+  --blue-dark: #60a5fa;
+  
+  /* Status Colors */
+  --status-normal: #10b981;
+  --status-normal-bg: rgba(16, 185, 129, 0.15);
+  --status-normal-border: rgba(16, 185, 129, 0.35);
+  
+  --status-warning: #f59e0b;
+  --status-warning-bg: rgba(245, 158, 11, 0.15);
+  --status-warning-border: rgba(245, 158, 11, 0.35);
+  
+  --status-critical: #ef4444;
+  --status-critical-bg: rgba(239, 68, 68, 0.18);
+  --status-critical-border: rgba(239, 68, 68, 0.4);
+
+  --badge-info-bg: rgba(56, 189, 248, 0.15);
+  --badge-info-color: #38bdf8;
+  --badge-info-border: rgba(56, 189, 248, 0.35);
+  
+  /* Typography Colors - Crystal Clear Contrast on Dark Backgrounds */
+  --text-main: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  
+  /* Shadows */
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --shadow-cyan-sm: 0 0 14px rgba(56, 189, 248, 0.25);
+}
+
+/* Global Smooth Color Transitions */
+body, .app-container, .main-layout, header, aside, .telemetry-card, .btn, input, select {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }

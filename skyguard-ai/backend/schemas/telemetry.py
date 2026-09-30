@@ -55,7 +55,14 @@ class PredictionResponse(BaseModel):
     anomaly_score: float = Field(..., description="Isolation Forest decision score (< 0 is abnormal)")
     confidence: float = Field(..., description="Calculated detection confidence (0.0 to 0.99)")
     timestamp: str = Field(..., description="Timestamp of the observation")
-    station_id: str = Field(..., description="Satellite or Station identifier")
+    station_id: str = Field(..., description="Weather Station identifier")
+    station_name: Optional[str] = Field(None, description="Descriptive station name")
+    city: Optional[str] = Field(None, description="Station city location")
+    district: Optional[str] = Field(None, description="Station district")
+    state: Optional[str] = Field(None, description="Station state")
+    latitude: Optional[float] = Field(None, description="Station latitude")
+    longitude: Optional[float] = Field(None, description="Station longitude")
+    station_type: Optional[str] = Field("Simulated Station Metadata", description="Technical accuracy label")
     telemetry: Dict[str, float] = Field(..., description="Sensor readings (temperature, humidity, pressure)")
     features: Optional[Dict[str, float]] = Field(None, description="Features used by the ML model")
 
@@ -103,3 +110,21 @@ class ModelInfoResponse(BaseModel):
     feature_count: int
     contamination: float
     severity_levels: List[str]
+
+
+class StationInfo(BaseModel):
+    station_id: str = Field(..., description="Automatic Weather Station identifier")
+    station_name: str = Field(..., description="Descriptive station name")
+    city: str = Field(..., description="City location")
+    district: str = Field(..., description="District location")
+    state: str = Field(..., description="State location")
+    latitude: float = Field(..., description="Latitude coordinate")
+    longitude: float = Field(..., description="Longitude coordinate")
+    station_type: str = Field(default="Simulated Station Metadata", description="Technical accuracy label")
+
+
+class StationListResponse(BaseModel):
+    total: int = Field(..., description="Total registered stations")
+    stations: List[StationInfo] = Field(..., description="Registered stations")
+    states: List[str] = Field(..., description="Unique states")
+    cities: List[str] = Field(..., description="Unique cities")

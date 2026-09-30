@@ -16,6 +16,7 @@ from backend.schemas.telemetry import (
     ModelInfoResponse,
     HealthResponse
 )
+from backend.services.station_service import get_station_metadata
 
 logger = logging.getLogger("skyguard.model_service")
 
@@ -247,6 +248,8 @@ class ModelService:
             severity = "HIGH"
 
         ts_str = record.timestamp or datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        st_id = record.station_id or "AWS-001"
+        st_meta = get_station_metadata(st_id)
 
         return PredictionResponse(
             is_anomaly=is_anomaly,
@@ -255,7 +258,14 @@ class ModelService:
             anomaly_score=round(decision_score, 6),
             confidence=confidence,
             timestamp=ts_str,
-            station_id=record.station_id or "SAT-001",
+            station_id=st_id,
+            station_name=st_meta.get("station_name"),
+            city=st_meta.get("city"),
+            district=st_meta.get("district"),
+            state=st_meta.get("state"),
+            latitude=st_meta.get("latitude"),
+            longitude=st_meta.get("longitude"),
+            station_type=st_meta.get("station_type", "Simulated Station Metadata"),
             telemetry={
                 "temperature": float(record.temperature),
                 "humidity": float(record.humidity),

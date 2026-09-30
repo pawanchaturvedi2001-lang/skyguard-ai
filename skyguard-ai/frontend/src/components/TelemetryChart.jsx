@@ -7,10 +7,10 @@ import {
   YAxis, 
   Tooltip, 
   CartesianGrid, 
-  Legend, 
   Scatter 
 } from 'recharts';
 import { LineChart as ChartIcon, Eye, EyeOff } from 'lucide-react';
+import { formatToIST } from '../utils/dateUtils';
 
 export default function TelemetryChart({ telemetryData = [], loading }) {
   const [showTemp, setShowTemp] = useState(true);
@@ -25,7 +25,7 @@ export default function TelemetryChart({ telemetryData = [], loading }) {
     // Take the most recent 'viewPoints' records and sort chronologically
     const sliced = telemetryData.slice(0, viewPoints).reverse();
     return sliced.map((item, idx) => {
-      const timeStr = item.timestamp ? item.timestamp.split(' ')[1] || item.timestamp : `T-${idx}`;
+      const timeStr = item.timestamp ? formatToIST(item.timestamp, 'time_short') : `T-${idx}`;
       const isAnom = item.anomaly === true;
       return {
         time: timeStr,
@@ -37,7 +37,6 @@ export default function TelemetryChart({ telemetryData = [], loading }) {
         isAnomaly: isAnom,
         anomaly_score: item.anomaly_score,
         severity: item.severity || (isAnom ? 'ANOMALY' : 'NORMAL'),
-        // Used for anomaly highlight dot on chart
         anomalyMarkerTemp: isAnom ? parseFloat(Number(item.temperature).toFixed(2)) : null,
       };
     });
@@ -49,7 +48,9 @@ export default function TelemetryChart({ telemetryData = [], loading }) {
       return (
         <div style={styles.tooltip}>
           <div style={styles.tooltipHeader}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{data.timestamp || label}</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
+              {data.timestamp ? formatToIST(data.timestamp, 'full') : label}
+            </span>
             {data.isAnomaly && (
               <span className="badge badge-critical" style={{ marginLeft: '8px' }}>
                 {data.severity}
@@ -60,23 +61,23 @@ export default function TelemetryChart({ telemetryData = [], loading }) {
             {showTemp && data.temperature != null && (
               <div style={styles.tooltipRow}>
                 <span style={{ color: '#ea580c', fontWeight: 500 }}>● Temperature:</span>
-                <span className="mono-value" style={{ fontWeight: 600, color: '#0f172a' }}>{data.temperature} °C</span>
+                <span className="mono-value" style={{ fontWeight: 600, color: 'var(--text-main)' }}>{data.temperature} °C</span>
               </div>
             )}
             {showPres && data.pressure != null && (
               <div style={styles.tooltipRow}>
                 <span style={{ color: '#0284c7', fontWeight: 500 }}>● Pressure:</span>
-                <span className="mono-value" style={{ fontWeight: 600, color: '#0f172a' }}>{data.pressure} hPa</span>
+                <span className="mono-value" style={{ fontWeight: 600, color: 'var(--text-main)' }}>{data.pressure} hPa</span>
               </div>
             )}
             {showHum && data.humidity != null && (
               <div style={styles.tooltipRow}>
                 <span style={{ color: '#0d9488', fontWeight: 500 }}>● Humidity:</span>
-                <span className="mono-value" style={{ fontWeight: 600, color: '#0f172a' }}>{data.humidity} %</span>
+                <span className="mono-value" style={{ fontWeight: 600, color: 'var(--text-main)' }}>{data.humidity} %</span>
               </div>
             )}
             {data.isAnomaly && (
-              <div style={{ ...styles.tooltipRow, borderTop: '1px solid #f1f5f9', paddingTop: '6px', marginTop: '6px' }}>
+              <div style={{ ...styles.tooltipRow, borderTop: '1px solid var(--border-subtle)', paddingTop: '6px', marginTop: '6px' }}>
                 <span style={{ color: '#dc2626', fontWeight: 600 }}>Anomaly Score:</span>
                 <span className="mono-value" style={{ color: '#dc2626', fontWeight: 700 }}>
                   {data.anomaly_score != null ? Number(data.anomaly_score).toFixed(4) : 'Detected'}
@@ -94,8 +95,8 @@ export default function TelemetryChart({ telemetryData = [], loading }) {
     <div className="telemetry-card" style={{ marginBottom: '24px' }}>
       <div className="card-header">
         <div className="card-title">
-          <ChartIcon size={18} color="#0284c7" />
-          <span>Multi-Stream Telemetry Flight Trajectory</span>
+          <ChartIcon size={18} color="var(--primary-color)" />
+          <span>Multi-Sensor Weather Telemetry Trends</span>
         </div>
 
         {/* Controls & Filter */}
@@ -106,9 +107,9 @@ export default function TelemetryChart({ telemetryData = [], loading }) {
               onClick={() => setShowTemp(!showTemp)}
               style={{
                 ...styles.toggleBtn,
-                background: showTemp ? '#fff7ed' : '#ffffff',
-                borderColor: showTemp ? '#fdba74' : '#e2e8f0',
-                color: showTemp ? '#ea580c' : '#94a3b8',
+                background: showTemp ? 'rgba(234, 88, 12, 0.12)' : 'var(--bg-canvas)',
+                borderColor: showTemp ? 'rgba(234, 88, 12, 0.4)' : 'var(--border-subtle)',
+                color: showTemp ? '#ea580c' : 'var(--text-muted)',
               }}
             >
               {showTemp ? <Eye size={12} /> : <EyeOff size={12} />}
@@ -119,9 +120,9 @@ export default function TelemetryChart({ telemetryData = [], loading }) {
               onClick={() => setShowPres(!showPres)}
               style={{
                 ...styles.toggleBtn,
-                background: showPres ? '#eff6ff' : '#ffffff',
-                borderColor: showPres ? '#93c5fd' : '#e2e8f0',
-                color: showPres ? '#0284c7' : '#94a3b8',
+                background: showPres ? 'rgba(2, 132, 199, 0.12)' : 'var(--bg-canvas)',
+                borderColor: showPres ? 'rgba(2, 132, 199, 0.4)' : 'var(--border-subtle)',
+                color: showPres ? '#0284c7' : 'var(--text-muted)',
               }}
             >
               {showPres ? <Eye size={12} /> : <EyeOff size={12} />}
@@ -132,9 +133,9 @@ export default function TelemetryChart({ telemetryData = [], loading }) {
               onClick={() => setShowHum(!showHum)}
               style={{
                 ...styles.toggleBtn,
-                background: showHum ? '#f0fdfa' : '#ffffff',
-                borderColor: showHum ? '#99f6e4' : '#e2e8f0',
-                color: showHum ? '#0d9488' : '#94a3b8',
+                background: showHum ? 'rgba(13, 148, 136, 0.12)' : 'var(--bg-canvas)',
+                borderColor: showHum ? 'rgba(13, 148, 136, 0.4)' : 'var(--border-subtle)',
+                color: showHum ? '#0d9488' : 'var(--text-muted)',
               }}
             >
               {showHum ? <Eye size={12} /> : <EyeOff size={12} />}
@@ -150,8 +151,8 @@ export default function TelemetryChart({ telemetryData = [], loading }) {
                 onClick={() => setViewPoints(num)}
                 style={{
                   ...styles.rangeBtn,
-                  background: viewPoints === num ? '#0284c7' : 'transparent',
-                  color: viewPoints === num ? '#ffffff' : '#64748b',
+                  background: viewPoints === num ? 'var(--primary-color)' : 'transparent',
+                  color: viewPoints === num ? '#ffffff' : 'var(--text-muted)',
                   fontWeight: viewPoints === num ? '700' : '500',
                 }}
               >
@@ -169,11 +170,11 @@ export default function TelemetryChart({ telemetryData = [], loading }) {
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={chartData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.9} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" opacity={0.7} />
               
               <XAxis 
                 dataKey="time" 
-                stroke="#64748b" 
+                stroke="var(--text-muted)" 
                 fontSize={11} 
                 tickLine={false}
                 fontFamily="var(--font-mono)"
@@ -182,7 +183,7 @@ export default function TelemetryChart({ telemetryData = [], loading }) {
               {/* Left Y Axis for Temperature & Humidity */}
               <YAxis 
                 yAxisId="left" 
-                stroke="#64748b" 
+                stroke="var(--text-muted)" 
                 fontSize={11} 
                 domain={['auto', 'auto']}
                 fontFamily="var(--font-mono)"
@@ -306,10 +307,10 @@ const styles = {
   rangeGroup: {
     display: 'flex',
     alignItems: 'center',
-    background: '#f1f5f9',
+    background: 'var(--bg-canvas)',
     padding: '2px',
     borderRadius: '4px',
-    border: '1px solid #e2e8f0',
+    border: '1px solid var(--border-subtle)',
   },
   rangeBtn: {
     padding: '3px 8px',
@@ -321,21 +322,21 @@ const styles = {
     transition: 'all 0.15s',
   },
   tooltip: {
-    background: '#ffffff',
-    border: '1px solid #e2e8f0',
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border-subtle)',
     borderRadius: 'var(--radius-sm)',
     padding: '10px 14px',
-    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+    boxShadow: 'var(--shadow-card)',
     fontSize: '0.78rem',
   },
   tooltipHeader: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottom: '1px solid #f1f5f9',
+    borderBottom: '1px solid var(--border-subtle)',
     paddingBottom: '6px',
     marginBottom: '8px',
-    color: '#64748b',
+    color: 'var(--text-muted)',
   },
   tooltipBody: {
     display: 'flex',
@@ -354,9 +355,9 @@ const styles = {
     gap: '20px',
     marginTop: '14px',
     paddingTop: '10px',
-    borderTop: '1px solid #f1f5f9',
+    borderTop: '1px solid var(--border-subtle)',
     fontSize: '0.74rem',
-    color: '#64748b',
+    color: 'var(--text-muted)',
     flexWrap: 'wrap',
   },
   legendItem: {
