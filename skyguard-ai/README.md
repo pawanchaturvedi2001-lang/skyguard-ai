@@ -8,18 +8,22 @@ The system ingests real-time and historical multi-channel telemetry streams (amb
 ---
 
 ## Features
-- **Automatic Weather Station Telemetry Monitoring**: High-frequency monitoring of ground and orbital telemetry stations.
+- **Automatic Weather Station Telemetry Monitoring**: High-frequency monitoring of AWS telemetry stations.
+- **Indian Standard Time (IST / Asia/Kolkata, UTC+05:30)**: Complete localized timezone formatting across all dynamic clocks, charts, tables, incident feeds, and CSV exports.
+- **Light & Dark Theme Modes**: Seamless theme switcher in the header with persistent `localStorage` preference and high-contrast, accessibility-compliant styling.
+- **Station Geographic Metadata**: Registered 10 representative Indian AWS stations (`AWS-001` through `AWS-010`) with City, State, District, and Geographic Coordinates (explicitly transparent as simulated station metadata for hackathon prototype integrity).
+- **Cascading Anomaly Filters**: State → City → Station → Severity cascading dropdown filters with one-click reset for rapid incident triage.
+- **Anomaly Inspection Modal**: Interactive incident inspection displaying AWS telemetry metrics, ML anomaly decision score, confidence level, and real-time Open-Meteo current city weather cross-examination.
 - **Multi-Sensor Tracking**: Continuous monitoring of ambient temperature, atmospheric pressure (MSL and surface), and relative humidity.
 - **Isolation Forest Anomaly Detection**: Unsupervised machine learning using a 15-feature space (including derivatives, velocities, and rolling volatility).
 - **Anomaly Severity & Confidence Scoring**: Intelligent classification into `NORMAL`, `LOW`, `MEDIUM`, and `HIGH` severity with normalized confidence metrics.
-- **Mission Control Dashboard**: Professional, responsive aerospace-style interface featuring live status badges, telemetry trajectory charts, and incident feeds.
-- **Telemetry Visualization**: Real-time trajectory charts displaying sensor readings alongside nominal baseline boundaries.
+- **Mission Control Dashboard**: Professional, responsive interface featuring live status badges, multi-sensor trend charts, and incident feeds.
 - **India Weather Network**: Live meteorological observations for locations across India via Open-Meteo REST APIs.
 - **Dynamic Indian City / Location Search**: Dynamic geocoding with district and state metadata to disambiguate identical place names (e.g., Bilaspur, Ujjain, Rampur).
-- **Real Current Weather using Open-Meteo**: 10+ physical meteorological indicators including temperature, feels-like temperature, humidity, pressure, wind speed/direction, cloud cover, and rain.
+- **Real Current Weather using Open-Meteo**: 10+ physical meteorological indicators including temperature, feels-like temperature, humidity, pressure, wind speed/direction, cloud cover, and precipitation.
 - **Meteorological vs. Sensor Anomaly Separation**: Clear architectural separation between natural weather states (Clear, Overcast, Rain) and hardware sensor defects.
 - **FastAPI Backend**: Asynchronous REST API with Pydantic validation, CORS middleware, and in-memory TTL caching.
-- **React Frontend**: Built with React, Vite, and Lucide React icons in a clean, professional aerospace design.
+- **React Frontend**: Built with React, Vite, and Lucide React icons in a clean, professional design.
 
 ---
 
@@ -232,10 +236,11 @@ The backend provides interactive OpenAPI documentation via Swagger UI at:
 | `GET` | `/api/health` | System readiness, ML model status, and scaler loading state |
 | `GET` | `/api/model-info` | Isolation Forest algorithm details, feature schema, and contamination |
 | `GET` | `/api/dashboard/summary` | Aggregate metrics (total records, anomalies detected, severity split) |
-| `GET` | `/api/telemetry` | Paginated raw telemetry historical readings |
-| `GET` | `/api/anomalies` | Filtered list of detected anomalies by severity or station |
-| `POST` | `/api/predict` | Single telemetry packet real-time anomaly inference |
-| `POST` | `/api/predict/batch` | Batch telemetry packet inference |
+| `GET` | `/api/stations` | Registered Indian AWS monitoring stations metadata |
+| `GET` | `/api/telemetry` | Paginated raw telemetry historical readings (supports `station_id`, `state`, `city`) |
+| `GET` | `/api/anomalies` | Filtered list of detected anomalies (supports `severity`, `station_id`, `state`, `city`) |
+| `POST` | `/api/predict` | Single telemetry packet real-time anomaly inference with station metadata |
+| `POST` | `/api/predict/batch` | High-throughput batch telemetry packet inference |
 | `GET` | `/api/locations/search` | Dynamic Indian location geocoding (`?q={city}`) |
 | `GET` | `/api/weather/current` | Real-time weather and ML evaluation by city or coordinates |
 | `GET` | `/api/weather/all` | Overview of all default monitored reference stations across India |
