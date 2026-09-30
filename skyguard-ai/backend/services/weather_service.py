@@ -4,6 +4,8 @@ import logging
 import urllib.request
 import urllib.parse
 import urllib.error
+import ssl
+import gzip
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple, Any
 from concurrent.futures import ThreadPoolExecutor
@@ -281,37 +283,69 @@ class WeatherService:
             logger.error(f"Unexpected error in location search for '{clean_query}': {e}", exc_info=True)
             return []
 
-    def _fetch_open_meteo_weather(self, lat: float, lon: float) -> Optional[Dict[str, Any]]:
-        """Queries Open-Meteo REST API for current weather + past 12-hour hourly telemetry."""
-        url = (
+    def _fetch_open_meteo_weather(self, lat: float, lon: float) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+        """Queries Open-Meteo REST API for current weather + past telemetry, with automatic fallback and gzip handling."""
+        user_agent = "SkyGuardAI/2.0 (WeatherAnomalyMonitoring; contact: pawanchaturvedi2001@gmail.com)"
+        headers = {
+            "User-Agent": user_agent,
+            "Accept": "application/json"
+        }
+        ctx = ssl.create_default_context()
+
+        # Primary query: Full telemetry including historical hourly intervals for ML rolling features
+        url_full = (
             f"https://api.open-meteo.com/v1/forecast"
             f"?latitude={lat}&longitude={lon}"
             f"&current=temperature_2m,relative_humidity_2m,apparent_temperature,pressure_msl,surface_pressure,weather_code,wind_speed_10m,wind_direction_10m,cloud_cover,precipitation,rain,is_day"
             f"&hourly=temperature_2m,relative_humidity_2m,pressure_msl"
             f"&past_days=1&forecast_days=1"
         )
-        req = urllib.request.Request(
-            url,
-            headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-                "Accept": "application/json"
-            }
+
+        # Fallback query: Fast real-time current observations only (minimal edge latency)
+        url_fast = (
+            f"https://api.open-meteo.com/v1/forecast"
+            f"?latitude={lat}&longitude={lon}"
+            f"&current=temperature_2m,relative_humidity_2m,apparent_temperature,pressure_msl,surface_pressure,weather_code,wind_speed_10m,wind_direction_10m,cloud_cover,precipitation,rain,is_day"
         )
 
-        try:
-            with urllib.request.urlopen(req, timeout=25) as response:
-                if response.status == 200:
-                    data = json.loads(response.read().decode("utf-8"))
-                    return data
-                else:
-                    logger.warning(f"Open-Meteo returned status {response.status} for lat={lat}, lon={lon}")
-                    return None
-        except urllib.error.URLError as e:
-            logger.warning(f"Network error contacting Open-Meteo weather endpoint: {e.reason}")
-            return None
-        except Exception as e:
-            logger.error(f"Unexpected error querying Open-Meteo weather: {e}", exc_info=True)
-            return None
+        def _execute_req(target_url: str, timeout_sec: int) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
+            req = urllib.request.Request(target_url, headers=headers)
+            try:
+                with urllib.request.urlopen(req, timeout=timeout_sec, context=ctx) as response:
+                    if response.status == 200:
+                        raw = response.read()
+                        if response.headers.get("Content-Encoding") == "gzip" or raw[:2] == b"\x1f\x8b":
+                            raw = gzip.decompress(raw)
+                        return json.loads(raw.decode("utf-8")), None
+                    else:
+                        return None, f"HTTP {response.status}"
+            except urllib.error.HTTPError as e:
+                err_text = ""
+                try:
+                    err_text = e.read().decode("utf-8", errors="ignore")[:80]
+                except Exception:
+                    pass
+                return None, f"HTTP {e.code}: {e.reason} ({err_text})"
+            except urllib.error.URLError as e:
+                return None, f"Network error: {e.reason}"
+            except Exception as e:
+                return None, f"Request error: {str(e)}"
+
+        # 1. Try primary full telemetry with 10s timeout
+        data, err = _execute_req(url_full, timeout_sec=10)
+        if data and "current" in data:
+            return data, None
+
+        logger.info(f"Full telemetry query notice ({err}); attempting fast current fallback for lat={lat}, lon={lon}")
+
+        # 2. Resilient fallback: fast current weather only
+        fallback_data, fallback_err = _execute_req(url_fast, timeout_sec=10)
+        if fallback_data and "current" in fallback_data:
+            return fallback_data, None
+
+        error_reason = fallback_err or err or "Meteorological provider did not return response within network timeout limit."
+        logger.warning(f"Both Open-Meteo queries failed for lat={lat}, lon={lon}: {error_reason}")
+        return None, error_reason
 
     def _evaluate_ml_compatibility(
         self,
@@ -502,10 +536,11 @@ class WeatherService:
         station_code = f"LOC-{abs(int(lat*100)):04d}-{abs(int(lon*100)):04d}"
 
         # Fetch Open-Meteo
-        api_data = self._fetch_open_meteo_weather(lat, lon)
+        api_data, fetch_err = self._fetch_open_meteo_weather(lat, lon)
         obs_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
         if not api_data or "current" not in api_data:
+            err_reason = fetch_err or "Meteorological provider did not return response within network timeout limit."
             resp = CityWeatherResponse(
                 city=name,
                 state=state,
@@ -536,7 +571,7 @@ class WeatherService:
                 anomaly_score=None,
                 severity=None,
                 confidence=None,
-                analysis_note="Meteorological provider did not return response within network timeout limit."
+                analysis_note=f"Meteorological query notice: {err_reason}"
             )
             # Short cache for failed requests
             self._weather_cache[cache_key] = (now - self._weather_cache_ttl + 30.0, resp)
