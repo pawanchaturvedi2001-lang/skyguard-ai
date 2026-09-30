@@ -5,11 +5,11 @@ import {
   AlertTriangle, 
   Database, 
   Cpu, 
-  ShieldCheck, 
   Wifi, 
   WifiOff,
   CloudSun
 } from 'lucide-react';
+import SkyGuardLogo from './SkyGuardLogo';
 
 export default function Sidebar({ activeTab, setActiveTab, systemHealth, isBackendConnected }) {
   const navItems = [
@@ -23,11 +23,16 @@ export default function Sidebar({ activeTab, setActiveTab, systemHealth, isBacke
 
   return (
     <aside style={styles.sidebar}>
-      {/* Brand Header */}
-      <div style={styles.brandContainer}>
-        <div style={styles.logoIcon}>
-          <ShieldCheck size={22} color="var(--primary-color)" />
-        </div>
+      {/* Interactive Brand Header with Tappable SkyGuard Logo */}
+      <div 
+        onClick={() => setActiveTab('overview')} 
+        style={styles.brandContainer}
+        className="brand-interactive-raised"
+        role="button"
+        tabIndex={0}
+        title="SkyGuard AI - Tap logo to return to Overview"
+      >
+        <SkyGuardLogo size={38} onClick={() => setActiveTab('overview')} interactive={true} />
         <div>
           <div style={styles.brandTitle}>SKYGUARD AI</div>
           <div style={styles.brandSubtitle}>Weather Station Intelligence</div>
@@ -49,6 +54,7 @@ export default function Sidebar({ activeTab, setActiveTab, systemHealth, isBacke
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
+              className="nav-button-raised"
               style={{
                 ...styles.navButton,
                 ...(isActive ? styles.navButtonActive : {}),
@@ -112,7 +118,7 @@ export default function Sidebar({ activeTab, setActiveTab, systemHealth, isBacke
         </div>
 
         <div style={styles.serverInfo}>
-          127.0.0.1:8000 / FastAPI
+          FastAPI • Isolation Forest (200 Trees)
         </div>
       </div>
     </aside>
@@ -134,17 +140,8 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
-    padding: '22px 20px 16px 20px',
-  },
-  logoIcon: {
-    width: '38px',
-    height: '38px',
-    borderRadius: '8px',
-    background: 'rgba(2, 132, 199, 0.1)',
-    border: '1px solid rgba(2, 132, 199, 0.25)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: '18px 16px 14px 16px',
+    margin: '6px 8px 10px 8px',
   },
   brandTitle: {
     fontSize: '1.05rem',
@@ -152,33 +149,36 @@ const styles = {
     letterSpacing: '0.04em',
     color: 'var(--text-main)',
     fontFamily: 'var(--font-mono)',
+    lineHeight: 1.2,
   },
   brandSubtitle: {
-    fontSize: '0.70rem',
+    fontSize: '0.68rem',
     color: 'var(--primary-color)',
     fontWeight: '600',
     letterSpacing: '0.04em',
     textTransform: 'uppercase',
+    marginTop: '2px',
   },
   missionTag: {
     margin: '0 16px 16px 16px',
     padding: '6px 10px',
-    borderRadius: '4px',
-    background: 'var(--bg-canvas)',
+    borderRadius: '6px',
+    background: 'var(--bg-space)',
     border: '1px solid var(--border-subtle)',
     fontSize: '0.67rem',
     fontFamily: 'var(--font-mono)',
     color: 'var(--text-muted)',
-    fontWeight: '500',
+    fontWeight: '600',
     display: 'flex',
     alignItems: 'center',
     gap: '6px',
   },
   missionDot: {
-    width: '6px',
-    height: '6px',
+    width: '7px',
+    height: '7px',
     borderRadius: '50%',
     backgroundColor: 'var(--primary-color)',
+    boxShadow: '0 0 6px var(--cyan-glow)',
   },
   nav: {
     flex: 1,
@@ -199,11 +199,11 @@ const styles = {
     position: 'relative',
     textAlign: 'left',
     width: '100%',
-    transition: 'all 0.15s ease',
   },
   navButtonActive: {
     background: 'rgba(2, 132, 199, 0.1)',
     borderColor: 'rgba(2, 132, 199, 0.3)',
+    boxShadow: '0 2px 8px rgba(2, 132, 199, 0.08)',
   },
   navTextContainer: {
     display: 'flex',
@@ -218,26 +218,26 @@ const styles = {
   },
   activeIndicator: {
     position: 'absolute',
-    right: 0,
+    left: '0px',
     top: '20%',
-    height: '60%',
+    bottom: '20%',
     width: '3px',
     backgroundColor: 'var(--primary-color)',
-    borderRadius: '2px 0 0 2px',
+    borderRadius: '0 2px 2px 0',
   },
   bottomStatus: {
     padding: '16px',
     borderTop: '1px solid var(--border-subtle)',
-    backgroundColor: 'var(--bg-canvas)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
+    backgroundColor: 'var(--bg-card-subtle)',
+    margin: 'auto 10px 12px 10px',
+    borderRadius: 'var(--radius-md)',
   },
   statusRow: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    fontSize: '0.75rem',
+    marginBottom: '8px',
+    fontSize: '0.74rem',
   },
   statusLabel: {
     display: 'flex',
@@ -247,14 +247,14 @@ const styles = {
   },
   statusValue: {
     fontFamily: 'var(--font-mono)',
-    fontWeight: '600',
-    fontSize: '0.72rem',
+    fontWeight: '700',
+    fontSize: '0.70rem',
   },
   serverInfo: {
-    marginTop: '4px',
-    fontSize: '0.67rem',
+    fontSize: '0.66rem',
+    color: 'var(--text-dim)',
     fontFamily: 'var(--font-mono)',
-    color: 'var(--text-muted)',
+    marginTop: '6px',
     textAlign: 'center',
   },
 };

@@ -8,6 +8,7 @@ import AnalyzeTelemetryPage from './pages/AnalyzeTelemetryPage';
 import EventHistoryPage from './pages/EventHistoryPage';
 import ModelStatusPage from './pages/ModelStatusPage';
 import CityWeatherPage from './pages/CityWeatherPage';
+import ErrorBoundary from './components/ErrorBoundary';
 import { apiService } from './services/api';
 import './styles/global.css';
 
@@ -157,50 +158,54 @@ export default function App() {
             />
           )}
 
-          {/* Dynamic Page Rendering */}
-          {activeTab === 'overview' && (
-            <OverviewPage
-              summaryData={summaryData}
-              telemetryData={telemetryData}
-              anomaliesData={anomaliesData}
-              systemHealth={systemHealth}
-              modelInfo={modelInfo}
-              loading={loading}
-              setActiveTab={setActiveTab}
-            />
-          )}
+          {/* Dynamic Page Rendering with Error Boundary and Raised Entrance Animation */}
+          <ErrorBoundary onReset={() => setActiveTab('overview')}>
+            <div key={activeTab} className="section-raised-animated">
+              {activeTab === 'overview' && (
+                <OverviewPage
+                  summaryData={summaryData}
+                  telemetryData={telemetryData}
+                  anomaliesData={anomaliesData}
+                  systemHealth={systemHealth}
+                  modelInfo={modelInfo}
+                  loading={loading}
+                  setActiveTab={setActiveTab}
+                />
+              )}
 
-          {activeTab === 'live' && (
-            <LiveTelemetryPage
-              telemetryData={telemetryData}
-              loading={loading}
-              onRefresh={() => loadDashboardData(false)}
-              autoRefresh={autoRefresh}
-              setAutoRefresh={setAutoRefresh}
-              selectedStation={selectedStation}
-              setSelectedStation={setSelectedStation}
-            />
-          )}
+              {activeTab === 'live' && (
+                <LiveTelemetryPage
+                  telemetryData={telemetryData}
+                  loading={loading}
+                  onRefresh={() => loadDashboardData(false)}
+                  autoRefresh={autoRefresh}
+                  setAutoRefresh={setAutoRefresh}
+                  selectedStation={selectedStation}
+                  setSelectedStation={setSelectedStation}
+                />
+              )}
 
-          {activeTab === 'predict' && (
-            <AnalyzeTelemetryPage />
-          )}
+              {activeTab === 'predict' && (
+                <AnalyzeTelemetryPage />
+              )}
 
-          {activeTab === 'weather' && (
-            <CityWeatherPage />
-          )}
+              {activeTab === 'weather' && (
+                <CityWeatherPage />
+              )}
 
-          {activeTab === 'history' && (
-            <EventHistoryPage />
-          )}
+              {activeTab === 'history' && (
+                <EventHistoryPage />
+              )}
 
-          {activeTab === 'model' && (
-            <ModelStatusPage
-              modelInfo={modelInfo}
-              systemHealth={systemHealth}
-              loading={loading}
-            />
-          )}
+              {activeTab === 'model' && (
+                <ModelStatusPage
+                  modelInfo={modelInfo}
+                  systemHealth={systemHealth}
+                  loading={loading}
+                />
+              )}
+            </div>
+          </ErrorBoundary>
         </main>
       </div>
     </div>

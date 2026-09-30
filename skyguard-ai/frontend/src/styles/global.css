@@ -59,24 +59,120 @@ body {
   margin: 0 auto;
 }
 
-/* Common Card Containers */
-.telemetry-card {
+/* ==============================================================================
+   Raised Animation UI (Elevation, Neumorphic Depth & Interactive Lift)
+   ============================================================================== */
+
+/* Section Entrance Animation */
+@keyframes sectionRaisedEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.996);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.section-raised-animated {
+  animation: sectionRaisedEntrance 0.30s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Elevated / Raised Card Styling */
+.telemetry-card, .raised-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 20px;
-  box-shadow: var(--shadow-card);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.05), 0 2px 5px -1px rgba(0, 0, 0, 0.03);
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.26s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease;
+  will-change: transform, box-shadow;
 }
 
-.telemetry-card:hover {
-  border-color: var(--border-light);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+.telemetry-card:hover, .raised-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-focus);
+  box-shadow: 0 12px 26px -4px rgba(2, 132, 199, 0.12), 0 6px 12px -2px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .telemetry-card,
+[data-theme="dark"] .raised-card {
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.4), 0 2px 6px -1px rgba(56, 189, 248, 0.06);
+}
+
+[data-theme="dark"] .telemetry-card:hover,
+[data-theme="dark"] .raised-card:hover {
+  box-shadow: 0 14px 30px -4px rgba(0, 0, 0, 0.6), 0 6px 14px -2px rgba(56, 189, 248, 0.18);
+  border-color: rgba(56, 189, 248, 0.5);
 }
 
 .telemetry-card.highlight {
-  border-color: rgba(2, 132, 199, 0.5);
-  box-shadow: 0 0 0 1px rgba(2, 132, 199, 0.2);
+  border-color: rgba(2, 132, 199, 0.6);
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.25), 0 8px 20px -2px rgba(2, 132, 199, 0.15);
+}
+
+/* Tappable Interactive Brand Header */
+.brand-interactive-raised {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand-interactive-raised:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-subtle);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.1);
+}
+
+.brand-interactive-raised:active {
+  transform: scale(0.96);
+}
+
+/* SkyGuard Logo Badge & Tap Animation */
+.skyguard-logo-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), filter 0.25s ease;
+  filter: drop-shadow(0 2px 6px rgba(2, 132, 199, 0.2));
+}
+
+.skyguard-logo-badge:hover {
+  transform: scale(1.08) rotate(-2deg);
+  filter: drop-shadow(0 4px 12px rgba(2, 132, 199, 0.35));
+}
+
+.skyguard-logo-badge.logo-tapped {
+  animation: logoTapPulse 0.42s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes logoTapPulse {
+  0% { transform: scale(0.88); }
+  50% { transform: scale(1.15) rotate(4deg); }
+  100% { transform: scale(1); }
+}
+
+/* Raised Navigation Buttons */
+.nav-button-raised {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, border-color 0.2s ease !important;
+}
+
+.nav-button-raised:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.08);
+}
+
+.nav-button-raised:active {
+  transform: scale(0.97);
 }
 
 .card-header {
