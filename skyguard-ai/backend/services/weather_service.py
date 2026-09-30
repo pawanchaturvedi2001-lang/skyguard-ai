@@ -229,13 +229,13 @@ class WeatherService:
         req = urllib.request.Request(
             url,
             headers={
-                "User-Agent": "SkyGuardAI-LocationSearch/1.0",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
                 "Accept": "application/json"
             }
         )
 
         try:
-            with urllib.request.urlopen(req, timeout=10) as response:
+            with urllib.request.urlopen(req, timeout=25) as response:
                 if response.status == 200:
                     data = json.loads(response.read().decode("utf-8"))
                     raw_results = data.get("results", [])
@@ -293,13 +293,13 @@ class WeatherService:
         req = urllib.request.Request(
             url,
             headers={
-                "User-Agent": "SkyGuardAI-WeatherMonitoring/1.0",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
                 "Accept": "application/json"
             }
         )
 
         try:
-            with urllib.request.urlopen(req, timeout=12) as response:
+            with urllib.request.urlopen(req, timeout=25) as response:
                 if response.status == 200:
                     data = json.loads(response.read().decode("utf-8"))
                     return data
